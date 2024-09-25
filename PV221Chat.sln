@@ -3,14 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV221Chat", "PV221Chat\PV221Chat.csproj", "{1456B711-D12B-45CF-9E8E-741C73C9471A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{E0516DD9-C830-43BC-A23C-2BBFC7D0C831}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{E2F558FF-3447-4CB9-90EE-374633E2B6A3}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Desktop\db_pv221chat_.sql = ..\..\..\..\Desktop\db_pv221chat_.sql
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PV221Chat", "PV221Chat\PV221Chat.csproj", "{1456B711-D12B-45CF-9E8E-741C73C9471A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,9 +18,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{E2F558FF-3447-4CB9-90EE-374633E2B6A3} = {E0516DD9-C830-43BC-A23C-2BBFC7D0C831}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FD4B6B47-AFE1-4D39-B45D-32E52BE5B710}
