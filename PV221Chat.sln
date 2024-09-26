@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PV221Chat", "PV221Chat\PV221Chat.csproj", "{1456B711-D12B-45CF-9E8E-741C73C9471A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PV221Chat.Core", "ClassLibrary1\PV221Chat.Core.csproj", "{4070EEEB-517E-46A0-B242-D4E42EA053EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1456B711-D12B-45CF-9E8E-741C73C9471A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1456B711-D12B-45CF-9E8E-741C73C9471A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1456B711-D12B-45CF-9E8E-741C73C9471A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4070EEEB-517E-46A0-B242-D4E42EA053EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4070EEEB-517E-46A0-B242-D4E42EA053EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4070EEEB-517E-46A0-B242-D4E42EA053EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4070EEEB-517E-46A0-B242-D4E42EA053EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
