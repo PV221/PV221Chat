@@ -1,0 +1,60 @@
+﻿
+@{
+}
+<div class="container">
+    <!-- Секція з картинкою -->
+    <div class="left-section">
+        <img src="path-to-your-image.jpg" alt="Your Image" class="image">
+    </div>
+    <!-- Секція з профілем -->
+    <div class="right-section">
+        <form>
+            <div>
+                <label for="name">Name:</label>
+                <textarea id="text" name="name"></textarea>
+            </div>
+            <div>
+                <label for="hobby">Hobby:</label>
+                <textarea id="text" name="hobby"></textarea>
+            </div>
+            <div>
+                <label for="skills">Skills:</label>
+                <textarea id="text" name="skills"></textarea>
+            </div>
+            <div>
+                <label for="region">Region:</label>
+                <textarea id="text" name="region"></textarea>
+            </div>
+            <div>
+                <button type="button">Change Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-section {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .image {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .right-section {
+        flex: 2;
+        white-space: wrap;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style >
