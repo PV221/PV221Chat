@@ -1,4 +1,9 @@
+using PV221Chat.Core.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add service DJ Interfaces to Repositories
+builder.Services.AddRepositoryService();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
