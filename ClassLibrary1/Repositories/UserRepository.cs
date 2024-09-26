@@ -13,7 +13,7 @@ public class UserRepository : EFRepository<User>, IUserRepository
     {
     }
 
-    public async Task<User> FindByEmail(string email)
+    public async Task<User?> FindByEmail(string email)
     {
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
