@@ -18,13 +18,13 @@ namespace PV221Chat.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        public async Task<IActionResult> Index(LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +51,7 @@ namespace PV221Chat.Controllers
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Chat", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
