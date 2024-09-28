@@ -5,6 +5,8 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.DTO;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PV221Chat.Controllers
 {
@@ -33,7 +35,7 @@ namespace PV221Chat.Controllers
 
             User user = await _userRepository.FindByEmail(loginDTO.Email);
 
-            if (user != null && VerifyPasswordHash(loginDTO.Password, user.PasswordHash))
+            if (user != null && user.PasswordHash == CalculateHash(loginDTO.Password, loginDTO.Email))
             {
                 var claims = new List<Claim>
             {
@@ -83,7 +85,7 @@ namespace PV221Chat.Controllers
             {
                 Nickname = userDTO.Nickname,
                 Email = userDTO.Email,
-                PasswordHash = CreatePasswordHash(userDTO.Password), // створити хеш пароля
+                PasswordHash = CalculateHash(userDTO.Password, userDTO.Email), // створити хеш пароля
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -92,24 +94,16 @@ namespace PV221Chat.Controllers
             return RedirectToAction("Chat","Home");
         }
 
-        private string CreatePasswordHash(string password)
-        {
-            // Метод для створення хешу пароля
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                var hashed = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashed);
-            }
-        }
 
-        private bool VerifyPasswordHash(string password, string storedHash)
+        private string CalculateHash(string clearTextPassword, string salt)
         {
-            if(password!=null && storedHash != null){ 
-                 var hash = CreatePasswordHash(password);
-            
-                 return storedHash == hash;
-            }
-            return false;
+            byte[] saltedHashBytes = Encoding.UTF8.GetBytes(clearTextPassword + salt);
+
+            HashAlgorithm algorithm = SHA256.Create();
+
+            byte[] hash = algorithm.ComputeHash(saltedHashBytes);
+
+            return Convert.ToBase64String(hash);
         }
     }
 }
