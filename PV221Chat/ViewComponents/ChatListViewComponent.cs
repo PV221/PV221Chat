@@ -3,7 +3,7 @@ using PV221Chat.DTO;
 
 namespace PV221Chat.ViewComponents
 {
-    public class ChatsListViewComponent : ViewComponent
+    public class ChatListViewComponent : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
