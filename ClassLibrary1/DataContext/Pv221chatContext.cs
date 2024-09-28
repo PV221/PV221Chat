@@ -14,6 +14,7 @@ public partial class Pv221chatContext : DbContext
     public Pv221chatContext(DbContextOptions<Pv221chatContext> options)
         : base(options)
     {
+        EnsureDatabaseCreated();
     }
 
     public virtual DbSet<BlockedUser> BlockedUsers { get; set; }
@@ -215,5 +216,9 @@ public partial class Pv221chatContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
+    private void EnsureDatabaseCreated()
+    {
+        this.Database.EnsureCreated();
+    }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -13,7 +13,7 @@ namespace PV221Chat.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Chat()
         {
             return View();
         }

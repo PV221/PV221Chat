@@ -5,7 +5,7 @@
 }
 <!-- Сторінка для логіну -->
 <div class="text-center">
-    <form asp-action="Index" method="post" class="loginForm">
+    <form asp-action="Login" method="post" class="loginForm">
         <div class="form-example">
             <label for="Email">Login: </label>
             <input type="text" name="Email" id="login" required />
@@ -15,10 +15,16 @@
             <input type="password" name="Password" id="password" required />
         </div>
         <div class="form-example">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <p class="text-danger">Такого користувача не існує!</p>
+            }
+        </div>
+        <div class="form-example">
             <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <div>
-            <label for="text ">If you don't have an account, <a class="nav-link text-dark" asp-controller="Login" asp-action="Register">Register</a></label>
-        </div>
     </form>
+    <div>
+        <label for="text ">If you don't have an account: <a href="@Url.Action("Register", "Login")" class="btn btn-link">Register</a></label>
+    </div>
 </div>

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
 using PV221Chat.Core.Services;
@@ -10,6 +11,16 @@ builder.Services.AddRepositoryService();
 // Add connection string to db context
 builder.Services.AddDbContext<Pv221chatContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+          .AddCookie(options =>
+          {
+              options.LoginPath = "/Login"; // Сторінка логіну
+              options.LogoutPath = "/Login/Logout"; // Сторінка логауту
+              options.AccessDeniedPath = "/Login/AccessDenied"; // Сторінка доступу заборонено
+              options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Час життя cookie
+              options.SlidingExpiration = true; // Автоматичне продовження часу життя cookie
+          });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -29,6 +40,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
