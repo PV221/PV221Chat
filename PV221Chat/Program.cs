@@ -23,6 +23,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
               options.AccessDeniedPath = "/Login/AccessDenied"; // Сторінка доступу заборонено
               options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Час життя cookie
               options.SlidingExpiration = true; // Автоматичне продовження часу життя cookie
+          })
+          .AddGoogle(googleOptions =>
+          {
+              googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+              googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+          })
+          .AddGitHub(githubOptions =>
+          {
+              githubOptions.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+              githubOptions.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
           });
 
 // Add services to the container.
