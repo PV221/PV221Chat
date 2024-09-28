@@ -28,7 +28,7 @@ namespace PV221Chat.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(loginDTO);
+                return RedirectToAction("Login");
             }
 
             User user = await _userRepository.FindByEmail(loginDTO.Email);
@@ -89,7 +89,7 @@ namespace PV221Chat.Controllers
 
             await _userRepository.AddDataAsync(user);
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Chat","Home");
         }
 
         private string CreatePasswordHash(string password)
@@ -104,11 +104,12 @@ namespace PV221Chat.Controllers
 
         private bool VerifyPasswordHash(string password, string storedHash)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return storedHash == Convert.ToBase64String(computedHash);
+            if(password!=null && storedHash != null){ 
+                 var hash = CreatePasswordHash(password);
+            
+                 return storedHash == hash;
             }
+            return false;
         }
     }
 }
