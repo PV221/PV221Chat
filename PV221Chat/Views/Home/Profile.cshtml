@@ -1,31 +1,39 @@
-﻿
+﻿@model PV221Chat.DTO.UserDTO
 @{
+    ViewData["Title"] = "Profile";
 }
 <div class="container">
-    <!-- Секція з картинкою -->
+    <!-- Left Section with Image -->
     <div class="left-section">
-        <img src="path-to-your-image.jpg" alt="Your Image" class="image">
+        <!-- Тут есть 'default-avatar.jpg', можно будет сделать просто стандартную аватарку пользователя который ещё её не ставил, или если хотите просто удалите это -->
+        <img src="@Model.AvatarUrl ?? 'default-avatar.jpg'" alt="Profile Image" class="image">
     </div>
-    <!-- Секція з профілем -->
+
     <div class="right-section">
-        <form>
+        <form method="post" action="/Profile/Update">
+            <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
             <div>
-                <label for="name">Name:</label>
-                <textarea id="text" name="name"></textarea>
+                <label for="Nickname">Nickname:</label>
+                <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
             </div>
             <div>
-                <label for="hobby">Hobby:</label>
-                <textarea id="text" name="hobby"></textarea>
+                <label for="Email">Email:</label>
+                <input type="email" id="Email" name="Email" value="@Model.Email" required />
             </div>
             <div>
-                <label for="skills">Skills:</label>
-                <textarea id="text" name="skills"></textarea>
+                <label for="avatarUrl">Avatar URL:</label>
+                <input type="url" id="avatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" />
             </div>
             <div>
-                <label for="region">Region:</label>
-                <textarea id="text" name="region"></textarea>
+                <label for="Hobbies">Hobbies:</label>
+                <input type="text" id="Hobbies" name="Hobbies" value="@Model.Hobbies" />
             </div>
             <div>
+                <label for="Skills">Skills:</label>
+                <input type="text" id="Skills" name="Skills" value="@Model.Skills" />
+            </div>
+            <div>
+                <button type="submit">Save Changes</button>
                 <button type="button">Change Password</button>
             </div>
         </form>
@@ -51,7 +59,7 @@
 
     .right-section {
         flex: 2;
-        white-space: wrap;
+        white-space: pre; <!-- Как я понял, и-за этого поля "отдалены" друг от друга, но зато не друг друга не налазят, пока нормально стилей нет, можно оставить -->
     }
 
     button:hover {
