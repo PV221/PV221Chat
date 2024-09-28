@@ -51,12 +51,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
-{
-    // Mapowanie Huba SignalR
-    endpoints.MapHub<ChatHub>("/chathub");
-    endpoints.MapHub<ChatListHub>("/chatlisthub");
-});
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatListHub>("/chatListHub");
 
 app.MapControllerRoute(
     name: "default",
