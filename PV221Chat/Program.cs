@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
 using PV221Chat.Core.Services;
+using PV221Chat.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service DJ Interfaces to Repositories
 builder.Services.AddRepositoryService();
+
+builder.Services.AddSignalR();
 
 // Add connection string to db context
 builder.Services.AddDbContext<Pv221chatContext>(options =>
@@ -37,6 +40,13 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    // Mapowanie Huba SignalR
+    endpoints.MapHub<ChatHub>("/chathub");
+    endpoints.MapHub<ChatListHub>("/chatlisthub");
+});
 
 app.MapControllerRoute(
     name: "default",
