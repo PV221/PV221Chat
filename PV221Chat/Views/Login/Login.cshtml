@@ -20,8 +20,9 @@
                 <p class="text-danger">Такого користувача не існує!</p>
             }
         </div>
+        <!-- Тут ссылка на профиль но она через контроллер Home -->
         <div class="form-example">
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary"><a href="@Url.Action("Profile", "Home")" class="btn btn-link">Login</a></button>
         </div>
     </form>
     <div>
