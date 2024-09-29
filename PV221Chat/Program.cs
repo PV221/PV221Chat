@@ -1,25 +1,39 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
 using PV221Chat.Core.Services;
-using Microsoft.AspNetCore.SignalR;
-using PV221Chat.Hubs;
-using PV221Chat.Core.Repositories;
-using PV221Chat.Core.Repositories.EF;
-using PV221Chat.Core.Interfaces;
+using PV221Chat.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add service DJ Interfaces to Repositories
 builder.Services.AddRepositoryService();
 
+builder.Services.AddSignalR();
+
 // Add connection string to db context
 builder.Services.AddDbContext<Pv221chatContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IChatRepository, ChatRepository>();
-
-// Add SignalR
-builder.Services.AddSignalR();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+          .AddCookie(options =>
+          {
+              options.LoginPath = "/Login"; // Сторінка логіну
+              options.LogoutPath = "/Login/Logout"; // Сторінка логауту
+              options.AccessDeniedPath = "/Login/AccessDenied"; // Сторінка доступу заборонено
+              options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Час життя cookie
+              options.SlidingExpiration = true; // Автоматичне продовження часу життя cookie
+          })
+          .AddGoogle(googleOptions =>
+          {
+              googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+              googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+          })
+          .AddGitHub(githubOptions =>
+          {
+              githubOptions.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+              githubOptions.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+          });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -40,9 +54,11 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatListHub>("/chatListHub");
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapHub<ChatHub>("/chatHub");
+    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();

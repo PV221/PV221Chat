@@ -1,0 +1,10 @@
+﻿@model IEnumerable<PV221Chat.DTO.ChatDTO>
+
+<div class="chat-list">
+    @foreach (var chat in Model)
+    {
+        <div class="chat-item">
+            <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">@chat.ChatName</a>
+        </div>
+    }
+</div>

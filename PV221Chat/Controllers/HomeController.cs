@@ -17,7 +17,7 @@ namespace PV221Chat.Controllers
             _chatRepository = chatRepository;
         }
 
-        public IActionResult Index()
+        public IActionResult Chat()
         {
             return View();
         }
