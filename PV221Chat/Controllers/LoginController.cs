@@ -33,17 +33,17 @@ namespace PV221Chat.Controllers
                 return RedirectToAction("Login");
             }
 
-            User user = await _userRepository.FindByEmail(loginDTO.Email);
+            User user = await _userRepository.FindByEmailAsync(loginDTO.Email);
 
             if (user != null && user.PasswordHash == CalculateHash(loginDTO.Password, loginDTO.Email))
             {
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.Nickname),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "User")
-            };
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.Name, user.Nickname),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, "User")
+                };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
@@ -74,7 +74,7 @@ namespace PV221Chat.Controllers
                 return View(userDTO);
             }
 
-            var userExists = await _userRepository.FindByEmail(userDTO.Email);
+            var userExists = await _userRepository.FindByEmailAsync(userDTO.Email);
             if (userExists != null)
             {
                 ModelState.AddModelError(string.Empty, "User already exists.");
