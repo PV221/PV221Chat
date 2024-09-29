@@ -13,19 +13,19 @@ public class UserRepository : EFRepository<User>, IUserRepository
     {
     }
 
-    public async Task<User?> FindByEmail(string email)
+    public async Task<User?> FindByEmailAsync(string email)
     {
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<bool> IsPresent(string email)
+    public async Task<bool> IsPresentAsync(string email)
     {
         return await _context.Users
              .AnyAsync(u => u.Email == email);
     }
 
-    public async Task<bool> IsValidUser(string email, string password)
+    public async Task<bool> IsValidUserAsync(string email, string password)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
