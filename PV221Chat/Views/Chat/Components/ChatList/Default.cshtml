@@ -1,5 +1,11 @@
 ﻿@model IEnumerable<PV221Chat.DTO.ChatDTO>
 
+<div class="member-search">
+    <form id="searchForm">
+        <input type="text" id="searchQuery" placeholder="Search members..." onkeyup="filterChats()" />
+    </form>
+</div>
+
 <div class="chat-list">
     @foreach (var chat in Model)
     {
@@ -8,3 +14,23 @@
         </div>
     }
 </div>
+
+<script>
+    function filterChats() {
+        // Get the search query
+        var searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+
+        // Get all chat items
+        var chatItems = document.getElementsByClassName('chat-item');
+
+        // Loop through all chat items and hide those that don't match the search query
+        for (var i = 0; i < chatItems.length; i++) {
+            var chatName = chatItems[i].getAttribute('data-chat-name').toLowerCase();
+            if (chatName.includes(searchQuery)) {
+                chatItems[i].style.display = '';
+            } else {
+                chatItems[i].style.display = 'none';
+            }
+        }
+    }
+</script>

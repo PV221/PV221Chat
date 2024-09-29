@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="DataModels\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
