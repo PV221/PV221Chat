@@ -27,6 +27,7 @@ namespace PV221Chat.Controllers
             return View();
         }
 
+        [HttpGet("Chat/{id:int}")]
         public async Task<IActionResult> Chat(int id)
         {
             var chat = await _chatRepository.GetDataAsync(id); 
