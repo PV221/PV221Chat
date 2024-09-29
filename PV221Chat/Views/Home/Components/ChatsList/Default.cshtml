@@ -1,0 +1,10 @@
+﻿@model List<string> 
+
+<div class="chat-list">
+    <ul>
+        @foreach (var chat in Model)
+        {
+            <li>@chat</li>
+        }
+    </ul>
+</div>

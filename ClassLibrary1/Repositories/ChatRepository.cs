@@ -8,8 +8,10 @@ namespace PV221Chat.Core.Repositories;
 
 public class ChatRepository : EFRepository<Chat>, IChatRepository
 {
+    private readonly Pv221chatContext _context;
     public ChatRepository(Pv221chatContext context) : base(context)
     {
+        _context = context;
     }
 
     public async Task<IEnumerable<Chat>> GetDataByUserIdAsync(int userId)

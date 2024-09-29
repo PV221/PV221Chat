@@ -4,7 +4,7 @@ namespace PV221Chat.Core.Interfaces;
 
 public interface IUserRepository : IDataRepository<User>
 {
-    Task<User?> FindByEmailAsync(string email);
-    Task<bool> IsPresentAsync(string email);
-    Task<bool> IsValidUserAsync(string email, string password);
+    Task<User?> FindByEmail(string email);
+    Task<bool> IsPresent(string email);
+    Task<bool> IsValidUser(string email, string password);
 }
