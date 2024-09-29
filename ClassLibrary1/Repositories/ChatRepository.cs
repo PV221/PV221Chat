@@ -13,10 +13,6 @@ public class ChatRepository : EFRepository<Chat>, IChatRepository
     {
         _context = context;
     }
-    public Chat GetChatById(int id)
-    {
-        return _context.Chats.FirstOrDefault(c => c.ChatId == id);
-    }
 
     public async Task<IEnumerable<Chat>> GetDataByUserIdAsync(int userId)
     {
