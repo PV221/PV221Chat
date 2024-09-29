@@ -18,7 +18,7 @@ builder.Services.AddDbContext<Pv221chatContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
           .AddCookie(options =>
           {
-              options.LoginPath = "/Login"; // Сторінка логіну
+              options.LoginPath = "/Login/Login"; // Сторінка логіну
               options.LogoutPath = "/Login/Logout"; // Сторінка логауту
               options.AccessDeniedPath = "/Login/AccessDenied"; // Сторінка доступу заборонено
               options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Час життя cookie
