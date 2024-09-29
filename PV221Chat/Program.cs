@@ -1,6 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
 using PV221Chat.Core.Services;
+using Microsoft.AspNetCore.SignalR;
+using PV221Chat.Hubs;
+using PV221Chat.Core.Repositories;
+using PV221Chat.Core.Repositories.EF;
+using PV221Chat.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +16,11 @@ builder.Services.AddRepositoryService();
 builder.Services.AddDbContext<Pv221chatContext>(options =>
                         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
+// Add SignalR
+builder.Services.AddSignalR();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -20,7 +30,10 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -29,6 +42,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
