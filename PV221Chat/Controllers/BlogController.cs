@@ -62,7 +62,7 @@ namespace PV221Chat.Controllers
                 }
 
             }
-            BlogPage page = new BlogPage() { 
+            BlogPage page1 = new BlogPage() { 
                 Author = userExists,
                 Title = userExists.Nickname,
                 Content="",
@@ -70,19 +70,19 @@ namespace PV221Chat.Controllers
                 CreatedAt= DateTime.Now,
             };
 
-            await _blogPageRepository.AddDataAsync(page);
+            await _blogPageRepository.AddDataAsync(page1);
 
-            BlogPageDTO pageDTO = new BlogPageDTO()
+            BlogPageDTO pageDTO1 = new BlogPageDTO()
             {
-                AuthorId = page.AuthorId,
-                BlogId = page.BlogId,
-                Title = page.Title,
-                Content = page.Content,
-                Type = page.Type,
-                CreatedAt = page.CreatedAt
+                AuthorId = page1.AuthorId,
+                BlogId = page1.BlogId,
+                Title = page1.Title,
+                Content = page1.Content,
+                Type = page1.Type,
+                CreatedAt = page1.CreatedAt
             };
 
-            return View(pageDTO);
+            return View(pageDTO1);
         }
     }
 }
