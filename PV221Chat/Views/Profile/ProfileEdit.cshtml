@@ -10,7 +10,7 @@
     </div>
 
     <div class="right-section">
-        <form method="post" action="/Profile/Update">
+        <form method="post" asp-action="Update">
             <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
             <div>
                 <label for="Nickname">Nickname:</label>
@@ -39,7 +39,7 @@
             </div>
             <!-- Тут ссылка на профиль но она через контроллер Home -->
             <div>
-                <label for="text "><a href="@Url.Action("Profile", "Home")" class="btn btn-link">Save Changes</a></label>
+                <label for="text "><a href="@Url.Action("Profile", "Profile")" class="btn btn-link">Save Changes</a></label>
                 <button type="button">Change Password</button>
             </div>
         </form>
