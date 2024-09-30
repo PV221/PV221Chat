@@ -8,15 +8,18 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using PV221Chat.Core.Repositories;
 
 namespace PV221Chat.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly IBlogPageRepository _blogPageRepository;
         private readonly IUserRepository _userRepository;
 
-        public LoginController(IUserRepository userRepository)
+        public LoginController(IUserRepository userRepository, IBlogPageRepository blogPageRepository)
         {
+            _blogPageRepository = blogPageRepository;
             _userRepository = userRepository;
         }
 
@@ -90,7 +93,18 @@ namespace PV221Chat.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
+
             await _userRepository.AddDataAsync(user);
+
+            BlogPage page = new BlogPage()
+            {
+                Author = user,
+                Title = userExists.Nickname,
+                Content = "",
+                Type = "Personal",
+                CreatedAt = DateTime.Now,
+            };
+            await _blogPageRepository.AddDataAsync(page);
 
             return RedirectToAction("Chat","Home");
         }

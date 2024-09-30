@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
@@ -61,7 +62,27 @@ namespace PV221Chat.Controllers
                 }
 
             }
-            return RedirectToAction("Login", "Login");
+            BlogPage page = new BlogPage() { 
+                Author = userExists,
+                Title = userExists.Nickname,
+                Content="",
+                Type= "Personal",
+                CreatedAt= DateTime.Now,
+            };
+
+            await _blogPageRepository.AddDataAsync(page);
+
+            BlogPageDTO pageDTO = new BlogPageDTO()
+            {
+                AuthorId = page.AuthorId,
+                BlogId = page.BlogId,
+                Title = page.Title,
+                Content = page.Content,
+                Type = page.Type,
+                CreatedAt = page.CreatedAt
+            };
+
+            return View(pageDTO);
         }
     }
 }
