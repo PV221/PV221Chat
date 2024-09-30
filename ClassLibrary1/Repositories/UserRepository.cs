@@ -13,6 +13,21 @@ public class UserRepository : EFRepository<User>, IUserRepository
     {
     }
 
+    public async Task<IEnumerable<User>> FindByChatIdAsync(int chatId)
+    {
+        var userChats = await _context.UserChats
+                                  .Where(uc => uc.ChatId == chatId)
+                                  .ToListAsync();
+
+        var userIds = userChats.Select(uc => uc.UserId).ToList();
+
+        var users = await _context.Users
+                                  .Where(u => userIds.Contains(u.UserId))
+                                  .ToListAsync();
+
+        return users;
+    }
+
     public async Task<User?> FindByEmailAsync(string email)
     {
         return await _context.Users
