@@ -9,11 +9,11 @@ namespace PV221Chat.Services
     {
         private readonly IMessageRepository _messageRepository;
         private readonly INotificationRepository _notificationRepository;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
         public MessageService(IMessageRepository messageRepository,
                               INotificationRepository notificationRepository,
-                              NotificationService notificationService)
+                              INotificationService notificationService)
         {
             _messageRepository = messageRepository;
             _notificationRepository = notificationRepository;
@@ -41,7 +41,6 @@ namespace PV221Chat.Services
 
         private async Task CreateNotificationAsync(int chatId, string messageText, int senderId)
         {
-            // Pobierz wszystkich użytkowników czatu, pomijając nadawcę
             var usersInChat = await _notificationRepository.GetUsersInChatExceptSenderAsync(chatId, senderId);
 
             foreach (var userChat in usersInChat)
