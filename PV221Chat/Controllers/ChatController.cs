@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.Models;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 
 namespace PV221Chat.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
         private readonly IChatRepository _chatRepository;

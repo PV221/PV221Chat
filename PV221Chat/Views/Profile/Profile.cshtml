@@ -1,0 +1,77 @@
+﻿@model PV221Chat.DTO.UserDTO
+@{
+    ViewData["Title"] = "Profile";
+}
+<div class="container">
+    <!-- Left Section with Image -->
+    <div class="left-section">
+        <!-- Тут есть 'default-avatar.jpg', можно будет сделать просто стандартную аватарку пользователя который ещё её не ставил -->
+        <img src="@Model.AvatarUrl ?? 'default-avatar.jpg'" alt="Profile Image" class="image">
+    </div>
+
+    <div class="right-section">
+        <form method="post" asp-action="Update">
+            <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
+            <div>
+                <label>Nickname:</label>
+                <span>@Model.Nickname</span>
+            </div>
+            <div>
+                <label>Email:</label>
+                <span>@Model.Email</span>
+            </div>
+            <div>
+                <label>Avatar URL:</label>
+                <span>@Model.AvatarUrl</span>
+            </div>
+            <div>
+                <label>Hobbies:</label>
+                <span>@Model.Hobbies</span>
+            </div>
+            <div>
+                <label>Skills:</label>
+                <span>@Model.Skills</span>
+            </div>
+            <div>
+                <label for="BirthDate">Birth Date:</label>
+                <span>@(Model.BirthDate?.ToString("yyyy-MM-dd") ?? "Not provided")</span>
+            </div>
+            <div>
+                <label for="CreationDate">Creation Date:</label>
+                <span>@(Model.CreatedAt?.ToString("yyyy-MM-dd"))</span>
+            </div>
+            <!-- Тут ссылка на редактирование профиля но она через контроллер Home -->
+            <div>
+                <label for="text "><a href="@Url.Action("ProfileEdit", "Home")" class="btn btn-link">Change your information</a></label>
+                <button type="button">Change Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-section {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .image {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .right-section {
+        flex: 2;
+        white-space: pre; <!-- Как я понял, и-за этого поля "отдалены" друг от друга, но зато не друг друга не налазят, пока нормально стилей нет, можно оставить -->
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style >

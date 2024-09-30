@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 
 namespace PV221Chat.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
