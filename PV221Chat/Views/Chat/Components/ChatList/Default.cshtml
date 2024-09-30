@@ -1,10 +1,47 @@
-﻿@model IEnumerable<PV221Chat.DTO.ChatDTO>
-
-<div class="chat-list">
+﻿<div class="chat-list">
     @foreach (var chat in Model)
     {
-        <div class="chat-item">
-            <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">@chat.ChatName</a>
+        <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
+            <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">
+                @chat.ChatName
+                @if (chat.HasUnreadMessages)
+                {
+                    <span class="unread-icon">
+                        🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
+                    </span>
+                }
+            </a>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatListHub") 
+            .build();
+
+        connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
+            var chatItem = document.getElementById("chat-" + chatId);
+
+            if (chatItem) {
+                var unreadIcon = chatItem.querySelector(".unread-icon");
+                if (unreadIcon) {
+                    unreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+                } else {
+                    var newUnreadIcon = document.createElement("span");
+                    newUnreadIcon.className = "unread-icon";
+                    newUnreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+                    chatItem.querySelector("a").appendChild(newUnreadIcon);
+                }
+            }
+        });
+
+        connection.start().then(function () {
+            console.log("SignalR connected");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    </script>
+}

@@ -4,10 +4,6 @@ namespace PV221Chat.SignalR;
 
 public class ChatListHub : Hub
 {
-    public async Task SendNotification(string chatId, string message)
-    {
-        await Clients.Group(chatId).SendAsync("ReceiveNotification", message);
-    }
     public override async Task OnConnectedAsync()
     {
         var chatId = Context.GetHttpContext().Request.Query["chatId"];
@@ -20,5 +16,11 @@ public class ChatListHub : Hub
         var chatId = Context.GetHttpContext().Request.Query["chatId"];
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
         await base.OnDisconnectedAsync(exception);
+    }
+
+    public async Task SendNotificationToGroup(int chatId, string message, int unreadCount)
+    {
+        await Clients.Group(chatId.ToString())
+            .SendAsync("ReceiveNotification", chatId, message, unreadCount);
     }
 }

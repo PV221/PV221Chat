@@ -1,24 +1,85 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PV221Chat.Core.DataModels;
+using PV221Chat.Core.Interfaces;
+using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using System.Security.Claims;
 
 namespace PV221Chat.ViewComponents
 {
     public class ChatListViewComponent : ViewComponent
     {
+        private readonly IUserRepository _userRepository;
+        private readonly IChatRepository _chatRepository;
+        private readonly INotificationRepository _notificationRepository;
+
+        public ChatListViewComponent(IUserRepository userRepository, IChatRepository chatRepository, INotificationRepository notificationRepository)
+        {
+            _userRepository = userRepository;
+            _chatRepository = chatRepository;
+            _notificationRepository = notificationRepository;
+        }
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var chats = await GetChatsAsync(); 
             return View(chats);
         }
 
-        private Task<List<ChatDTO>> GetChatsAsync()
+        private async Task<List<ChatDTO>> GetChatsAsync()
         {
-            // Zastąp to prawdziwym pobraniem danych
-            return Task.FromResult(new List<ChatDTO>
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                return new List<ChatDTO>();
+            }
+
+            var user = await _userRepository.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new List<ChatDTO>();
+            }
+
+            var chats = await _chatRepository.GetDataByUserIdAsync(user.UserId);
+
+            return (await ConvertChatsToChatDTOs(chats, user.UserId)).ToList();
+        }
+
+
+        private async Task<IEnumerable<ChatDTO>> ConvertChatsToChatDTOs(IEnumerable<Chat> chats, int userId)
         {
-            new ChatDTO { ChatId = 1, ChatName = "Chat 1", IsOpen = true },
-            new ChatDTO { ChatId = 2, ChatName = "Chat 2", IsOpen = false }
-        });
+            List<ChatDTO> chatDTOs = new List<ChatDTO>();
+
+            foreach (var chat in chats)
+            {
+                var unreadNotifications = await _notificationRepository.GetUnreadNotificationsByUserAndChatIdAsync(chat.ChatId, userId);
+
+                if (string.IsNullOrEmpty(chat.ChatName) && chat.ChatType == "Private")
+                {
+                    var users = await _userRepository.FindByChatIdAsync(chat.ChatId);
+                    if(users.Count() == 2)
+                    {
+                        var user = users.FirstOrDefault(u => u.UserId != userId);
+                        chat.ChatName = user.Nickname;
+
+                    }
+                }
+
+                chatDTOs.Add(new ChatDTO
+                {
+                    ChatId = chat.ChatId,
+                    ChatName = chat.ChatName,
+                    ChatType = chat.ChatType,
+                    IsOpen = chat.IsOpen, 
+                    CreatedAt = chat.CreatedAt,
+                    HasUnreadMessages = unreadNotifications.Any(),
+                    TextUnreadMessages = unreadNotifications.Last().NotificationText,
+                    CountUnreadMessages = unreadNotifications.Count()
+                });
+            }
+
+            return chatDTOs;
         }
     }
 }
