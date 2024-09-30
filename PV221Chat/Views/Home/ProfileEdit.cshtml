@@ -5,7 +5,7 @@
 <div class="container">
     <!-- Left Section with Image -->
     <div class="left-section">
-        <!-- Тут есть 'default-avatar.jpg', можно будет сделать просто стандартную аватарку пользователя который ещё её не ставил -->
+        <!-- Тут есть 'default-avatar.jpg', можно будет сделать просто стандартную аватарку пользователя который ещё её не ставил, или если хотите просто удалите это -->
         <img src="@Model.AvatarUrl ?? 'default-avatar.jpg'" alt="Profile Image" class="image">
     </div>
 
@@ -13,36 +13,33 @@
         <form method="post" action="/Profile/Update">
             <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
             <div>
-                <label>Nickname:</label>
-                <span>@Model.Nickname</span>
+                <label for="Nickname">Nickname:</label>
+                <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
             </div>
             <div>
-                <label>Email:</label>
-                <span>@Model.Email</span>
+                <label for="Email">Email:</label>
+                <input type="email" id="Email" name="Email" value="@Model.Email" required />
             </div>
             <div>
-                <label>Avatar URL:</label>
-                <span>@Model.AvatarUrl</span>
+                <label for="avatarUrl">Avatar URL:</label>
+                <input type="url" id="avatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" />
             </div>
             <div>
-                <label>Hobbies:</label>
-                <span>@Model.Hobbies</span>
+                <label for="Hobbies">Hobbies:</label>
+                <input type="text" id="Hobbies" name="Hobbies" value="@Model.Hobbies" />
             </div>
             <div>
-                <label>Skills:</label>
-                <span>@Model.Skills</span>
+                <label for="Skills">Skills:</label>
+                <input type="text" id="Skills" name="Skills" value="@Model.Skills" />
             </div>
             <div>
                 <label for="BirthDate">Birth Date:</label>
-                <span>@(Model.BirthDate?.ToString("yyyy-MM-dd") ?? "Not provided")</span>
+                <input type="date" id="BirthDate" name="BirthDate"
+                       value="@Model.BirthDate?.ToString("yyyy-MM-dd")" />
             </div>
+            <!-- Тут ссылка на профиль но она через контроллер Home -->
             <div>
-                <label for="CreationDate">Creation Date:</label>
-                <span>@(Model.CreatedAt?.ToString("yyyy-MM-dd"))</span>
-            </div>
-            <!-- Тут ссылка на редактирование профиля но она через контроллер Home -->
-            <div>
-                <label for="text "><a href="@Url.Action("ProfileEdit", "Home")" class="btn btn-link">Change your information</a></label>
+                <label for="text "><a href="@Url.Action("Profile", "Home")" class="btn btn-link">Save Changes</a></label>
                 <button type="button">Change Password</button>
             </div>
         </form>
