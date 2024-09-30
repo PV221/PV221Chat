@@ -17,5 +17,7 @@ public partial class UserChat
 
     public virtual Chat? Chat { get; set; }
 
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
     public virtual User? User { get; set; }
 }

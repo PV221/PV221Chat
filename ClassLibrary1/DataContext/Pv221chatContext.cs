@@ -43,6 +43,12 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.BlockId).HasName("PK__BlockedU__144215F14E325896");
 
+            entity.HasIndex(e => e.BlockedByUserId, "IX_BlockedUsers_BlockedByUserId");
+
+            entity.HasIndex(e => e.BlockedUserId, "IX_BlockedUsers_BlockedUserId");
+
+            entity.HasIndex(e => e.ChatId, "IX_BlockedUsers_ChatId");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -64,6 +70,8 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.BlogId).HasName("PK__BlogPage__54379E30072AD400");
 
+            entity.HasIndex(e => e.AuthorId, "IX_BlogPages_AuthorId");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -78,6 +86,10 @@ public partial class Pv221chatContext : DbContext
         modelBuilder.Entity<BlogSubscription>(entity =>
         {
             entity.HasKey(e => e.SubscriptionId).HasName("PK__BlogSubs__9A2B249D02618BE4");
+
+            entity.HasIndex(e => e.BlogId, "IX_BlogSubscriptions_BlogId");
+
+            entity.HasIndex(e => e.UserId, "IX_BlogSubscriptions_UserId");
 
             entity.Property(e => e.SubscribedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -107,6 +119,10 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.MessageId).HasName("PK__Messages__C87C0C9CB22DEBA9");
 
+            entity.HasIndex(e => e.ChatId, "IX_Messages_ChatId");
+
+            entity.HasIndex(e => e.SenderId, "IX_Messages_SenderId");
+
             entity.Property(e => e.IsDeleted).HasDefaultValue(false);
             entity.Property(e => e.SentAt)
                 .HasDefaultValueSql("(getdate())")
@@ -124,6 +140,12 @@ public partial class Pv221chatContext : DbContext
         modelBuilder.Entity<ModerationLog>(entity =>
         {
             entity.HasKey(e => e.LogId).HasName("PK__Moderati__5E54864890767024");
+
+            entity.HasIndex(e => e.ModeratorId, "IX_ModerationLogs_ModeratorId");
+
+            entity.HasIndex(e => e.TargetChatId, "IX_ModerationLogs_TargetChatId");
+
+            entity.HasIndex(e => e.TargetUserId, "IX_ModerationLogs_TargetUserId");
 
             entity.Property(e => e.Action).HasMaxLength(100);
             entity.Property(e => e.ActionTakenAt)
@@ -147,15 +169,17 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E1213E3E3F1");
 
+            entity.HasIndex(e => e.UserChatId, "IX_Notifications_UserChatId");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
             entity.Property(e => e.NotificationText).HasMaxLength(255);
 
-            entity.HasOne(d => d.User).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Notificat__UserI__44FF419A");
+            entity.HasOne(d => d.UserChat).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.UserChatId)
+                .HasConstraintName("FK__Notificat__UserChatI__44FF419A");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -181,6 +205,10 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.UserChatId).HasName("PK__UserChat__B5C6DD2215EF0527");
 
+            entity.HasIndex(e => e.ChatId, "IX_UserChats_ChatId");
+
+            entity.HasIndex(e => e.UserId, "IX_UserChats_UserId");
+
             entity.Property(e => e.IsAdmin).HasDefaultValue(false);
             entity.Property(e => e.MembershipStatus)
                 .HasMaxLength(50)
@@ -199,6 +227,10 @@ public partial class Pv221chatContext : DbContext
         {
             entity.HasKey(e => e.RatingId).HasName("PK__UserRati__FCCDF87C35F95E37");
 
+            entity.HasIndex(e => e.RatedById, "IX_UserRatings_RatedById");
+
+            entity.HasIndex(e => e.RatedUserId, "IX_UserRatings_RatedUserId");
+
             entity.Property(e => e.RatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -215,10 +247,9 @@ public partial class Pv221chatContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
     private void EnsureDatabaseCreated()
     {
-        this.Database.EnsureCreated();
+        Database.EnsureCreated();
     }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

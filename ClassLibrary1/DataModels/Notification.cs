@@ -7,7 +7,7 @@ public partial class Notification
 {
     public int NotificationId { get; set; }
 
-    public int? UserId { get; set; }
+    public int? UserChatId { get; set; }
 
     public string? NotificationText { get; set; }
 
@@ -15,5 +15,5 @@ public partial class Notification
 
     public bool? IsRead { get; set; }
 
-    public virtual User? User { get; set; }
+    public virtual UserChat? UserChat { get; set; }
 }

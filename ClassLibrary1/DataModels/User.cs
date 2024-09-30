@@ -41,8 +41,6 @@ public partial class User
 
     public virtual ICollection<ModerationLog> ModerationLogTargetUsers { get; set; } = new List<ModerationLog>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
-
     public virtual ICollection<UserChat> UserChats { get; set; } = new List<UserChat>();
 
     public virtual ICollection<UserRating> UserRatingRatedBies { get; set; } = new List<UserRating>();
