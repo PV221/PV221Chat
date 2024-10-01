@@ -1,0 +1,50 @@
+﻿@model List<PV221Chat.DTO.MemberDTO>
+
+<div class="member-list">
+    <h3>Member List</h3>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="grid-container">
+            @foreach (var member in Model)
+            {
+                <div class="member-item">
+                    <strong>@member.Nickname</strong> (@member.Email)
+                    @* @if (!string.IsNullOrEmpty(member.AvatarUrl))
+                    {
+                    <img src="@member.AvatarUrl" alt="Avatar" class="avatar-img" />
+                    } *@
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No members to display.</p>
+    }
+</div>
+
+<style>
+    .member-list {
+        margin: 20px 0;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .member-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+        cursor: pointer; 
+    }
+
+    .member-item:hover {
+        transform: scale(1.05);
+    }
+</style>
