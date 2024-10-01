@@ -1,4 +1,6 @@
-﻿namespace PV221Chat.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PV221Chat.DTO
 {
     public class BlogPageDTO
     {
@@ -9,5 +11,4 @@
         public string Type { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
-
 }

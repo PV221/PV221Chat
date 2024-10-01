@@ -10,28 +10,35 @@
     <!-- Правая часть с полем для поста -->
     <div class="right-column">
         <div class="create-post-box">
-            <form asp-action="CreatePost" method="post">
-                <textarea name="Content" placeholder="Що відбулось?" class="post-input">@Model.UpdateBlogPost.Content</textarea>
+            <form asp-action="UpdateBlogPost" method="post">
+                <textarea placeholder="Что произошло?" class="post-input" name="Content" required></textarea>
                 <div class="action-buttons">
-                    <button type="submit" class="post-action-button">Отправить</button>
+                    <button type="submit" class="post-action-button">Опубликовать</button>
+                    <button type="button" class="post-action-button">Фото</button>
                 </div>
             </form>
         </div>
 
         <!-- Место для списка постов -->
         <div class="post-list">
-            @foreach (var post in Model.BlogPosts)
+            @if (Model.BlogPosts == null || !Model.BlogPosts.Any())
             {
-                <div class="post">
-                    <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
-                    <p>@Model.User.Nickname</p>
-                    <p>@post.Content</p>
-                </div>
+                <p>No posts available.</p>
+            }
+            else
+            {
+                foreach (var post in Model.BlogPosts)
+                {
+                    <div class="post">
+                        <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
+                        <p>@Model.User.Nickname</p>
+                        <p>@post.Content</p>
+                    </div>
+                }
             }
         </div>
     </div>
 </div>
-
 <style>
     .blog-container {
         display: flex;
@@ -45,7 +52,7 @@
         .left-column .avatar {
             width: 100px;
             height: 100px;
-            background-color: red; /* Временно красный квадрат для аватара */
+            background-color: red; 
         }
 
     .right-column {
@@ -75,24 +82,28 @@
     }
 
     .post-action-button {
-        width: 30px;
-        height: 30px;
-        background-color: #ccc;
+        width: 100px; 
+        height: 30px; 
+        background-color: #007BFF; 
+        color: white; 
         border: none;
         margin-left: 5px;
+        cursor: pointer; 
     }
 
     .post-list .post {
         margin-bottom: 20px;
         padding: 10px;
         border: 1px solid #ccc;
+        display: flex;
+        align-items: center; 
     }
 
     .post .avatar {
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        background-color: grey; /* Временно серый квадрат для аватара */
+        background-color: grey; 
         margin-right: 10px;
     }
 </style>
