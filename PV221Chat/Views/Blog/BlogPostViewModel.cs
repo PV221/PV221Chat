@@ -1,4 +1,5 @@
-﻿using PV221Chat.DTO;
+﻿using System.Collections.Generic;
+using PV221Chat.DTO;
 
 namespace PV221Chat.ViewModels
 {
@@ -6,5 +7,12 @@ namespace PV221Chat.ViewModels
     {
         public UserDTO User { get; set; }
         public UpdateBlogPageDTO BlogPost { get; set; }
+        public UpdateBlogPageDTO UpdateBlogPost { get; set; }
+        public List<BlogPageDTO> BlogPosts { get; set; }
+
+        public BlogPostViewModel()
+        {
+            BlogPosts = new List<BlogPageDTO>();
+        }
     }
 }
