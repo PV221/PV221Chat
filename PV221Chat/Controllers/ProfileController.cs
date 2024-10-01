@@ -17,9 +17,65 @@ namespace PV221Chat.Controllers
             _userRepository = userRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            if (userEmailClaim == null)
+            {
+                ModelState.AddModelError(string.Empty, "User is not authenticated."); 
+
+                return RedirectToAction("Login", "Login");
+            }
+
+            string currentUserEmail = userEmailClaim.Value;
+
+
+            var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
+            if (userExists == null)
+            {
+                ModelState.AddModelError(string.Empty, "User doesn`t exists.");
+                return RedirectToAction("Login", "Login");
+            }
+            UserDTO userDTO = new UserDTO()
+            {
+                Nickname = userExists.Nickname,
+                Email = userExists.Email,
+                AvatarUrl = userExists.AvatarUrl,
+                Hobbies = userExists.Hobbies,
+                Skills = userExists.Skills,
+                BirthDate = userExists.BirthDate
+            };
+            return View(userDTO);
+        }
+        public async Task<IActionResult> ProfileEdit()
+        {
+            var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            if (userEmailClaim == null)
+            {
+                ModelState.AddModelError(string.Empty, "User is not authenticated."); 
+
+                return RedirectToAction("Login", "Login");
+            }
+
+            string currentUserEmail = userEmailClaim.Value;
+
+
+            var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
+            if (userExists == null)
+            {
+                ModelState.AddModelError(string.Empty, "User doesn`t exists.");
+                return RedirectToAction("Login", "Login");
+            }
+            UserDTO userDTO = new UserDTO()
+            {
+                Nickname = userExists.Nickname,
+                Email = userExists.Email,
+                AvatarUrl = userExists.AvatarUrl,
+                Hobbies = userExists.Hobbies,
+                Skills = userExists.Skills,
+                BirthDate = userExists.BirthDate
+            };
+            return View(userDTO);
         }
 
         [HttpPost]
