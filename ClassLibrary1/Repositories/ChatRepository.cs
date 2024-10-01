@@ -14,6 +14,27 @@ public class ChatRepository : EFRepository<Chat>, IChatRepository
         _context = context;
     }
 
+    public async Task<Chat> CreatePrivateChatAsync(int userId1, int userId2)
+    {
+        var chat = new Chat
+        {
+            ChatName = null, 
+            ChatType = "Private",
+            IsOpen = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _context.Chats.AddAsync(chat);
+        await _context.SaveChangesAsync(); 
+
+        await _context.UserChats.AddAsync(new UserChat { UserId = userId1, ChatId = chat.ChatId });
+        await _context.UserChats.AddAsync(new UserChat { UserId = userId2, ChatId = chat.ChatId });
+
+        await _context.SaveChangesAsync(); 
+
+        return chat; 
+    }
+
     public async Task<IEnumerable<Chat>> GetDataByUserIdAsync(int userId)
     {
         var userChats = await _context.UserChats

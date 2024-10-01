@@ -15,4 +15,8 @@
     <ProjectReference Include="..\ClassLibrary1\PV221Chat.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\PrivateChat\" />
+  </ItemGroup>
+
 </Project>

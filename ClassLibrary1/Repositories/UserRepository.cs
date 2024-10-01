@@ -34,6 +34,18 @@ public class UserRepository : EFRepository<User>, IUserRepository
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
+    public async Task<Chat?> GetPrivateChatBetweenUsersAsync(int userId1, int userId2)
+    {
+       var chat = await _context.Chats
+            .Include(c => c.UserChats)
+            .FirstOrDefaultAsync(c =>
+                c.ChatType == "Private" &&
+                c.UserChats.Any(uc => uc.UserId == userId1) &&
+                c.UserChats.Any(uc => uc.UserId == userId2));
+
+        return chat;
+    }
+
     public async Task<bool> IsPresentAsync(string email)
     {
         return await _context.Users
