@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using System.Security.Claims;
 
 namespace PV221Chat.Controllers
@@ -36,15 +37,8 @@ namespace PV221Chat.Controllers
                 ModelState.AddModelError(string.Empty, "User doesn`t exists.");
                 return RedirectToAction("Login", "Login");
             }
-            UserDTO userDTO = new UserDTO()
-            {
-                Nickname = userExists.Nickname,
-                Email = userExists.Email,
-                AvatarUrl = userExists.AvatarUrl,
-                Hobbies = userExists.Hobbies,
-                Skills = userExists.Skills,
-                BirthDate = userExists.BirthDate
-            };
+
+            UserDTO userDTO = UserMapper.ToDTO(userExists);
             return View(userDTO);
         }
         public async Task<IActionResult> ProfileEdit()
@@ -66,15 +60,8 @@ namespace PV221Chat.Controllers
                 ModelState.AddModelError(string.Empty, "User doesn`t exists.");
                 return RedirectToAction("Login", "Login");
             }
-            UserDTO userDTO = new UserDTO()
-            {
-                Nickname = userExists.Nickname,
-                Email = userExists.Email,
-                AvatarUrl = userExists.AvatarUrl,
-                Hobbies = userExists.Hobbies,
-                Skills = userExists.Skills,
-                BirthDate = userExists.BirthDate
-            };
+
+            UserDTO userDTO = UserMapper.ToDTO(userExists);
             return View(userDTO);
         }
 
@@ -102,12 +89,8 @@ namespace PV221Chat.Controllers
                 ModelState.AddModelError(string.Empty, "User doesn`t exists.");
                 return View(userDTO);
             }
-            userExists.Nickname = userDTO.Nickname;
-            userExists.Email = userDTO.Email;
-            userExists.AvatarUrl = userDTO.AvatarUrl;
-            userExists.Hobbies = userDTO.Hobbies;
-            userExists.Skills = userDTO.Skills;
-            userExists.BirthDate = userDTO.BirthDate;
+
+            UserMapper.UpdateModel(userDTO, userExists);
 
             await _userRepository.UpdateDataAsync(userExists.UserId, userExists);
 
