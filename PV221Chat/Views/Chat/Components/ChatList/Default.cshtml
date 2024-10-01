@@ -1,17 +1,28 @@
 ﻿<div class="chat-list">
-    @foreach (var chat in Model)
+    <h3>Chat List</h3>
+
+    @if (Model != null && Model.Count > 0)
     {
-        <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
-            <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">
-                @chat.ChatName
-                @if (chat.HasUnreadMessages)
-                {
-                    <span class="unread-icon">
-                        🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
-                    </span>
-                }
-            </a>
+        <div class="grid-container">
+            @foreach (var chat in Model)
+            {
+                <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
+                    <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">
+                        <strong>@chat.ChatName</strong>
+                        @if (chat.HasUnreadMessages)
+                        {
+                            <span class="unread-icon">
+                                🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
+                            </span>
+                        }
+                    </a>
+                </div>
+            }
         </div>
+    }
+    else
+    {
+        <p>No chats to display.</p>
     }
 </div>
 
@@ -19,7 +30,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
     <script type="text/javascript">
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatListHub") 
+            .withUrl("/chatListHub")
             .build();
 
         connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
@@ -45,3 +56,42 @@
         });
     </script>
 }
+
+
+<style>
+    .chat-list {
+        margin: 20px 0;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .chat-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .chat-item:hover {
+        transform: scale(1.05);
+    }
+
+    .chat-item a {
+        text-decoration: none;
+        color: #000;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .unread-icon {
+        color: red;
+        font-size: 0.9em;
+    }
+</style>

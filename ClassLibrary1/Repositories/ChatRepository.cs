@@ -24,4 +24,15 @@ public class ChatRepository : EFRepository<Chat>, IChatRepository
 
         return userChats;
     }
+
+    public async Task<IEnumerable<User>> GetUsersByChatId(int chatId)
+    {
+        var users = await _context.UserChats
+                              .Where(uc => uc.ChatId == chatId) 
+                              .Select(uc => uc.User)            
+                              .Where(user => user != null)       
+                              .ToListAsync();
+
+        return users;
+    }
 }
