@@ -3,27 +3,31 @@
 <div class="blog-container">
     <!-- Левая часть с аватаром и ником -->
     <div class="left-column">
-        <img src="user.AvatarUrl" alt="Avatar" class="avatar">
-        <p>user.Nickname</p>
+        <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
+        <p>@Model.User.Nickname</p>
     </div>
 
     <!-- Правая часть с полем для поста -->
     <div class="right-column">
         <div class="create-post-box">
-            <textarea placeholder="Що відбулось?" class="post-input"></textarea>
-            <div class="action-buttons">
-                <button class="post-action-button"></button> 
-                <button class="post-action-button"></button>
-            </div>
+            <form asp-action="CreatePost" method="post">
+                <textarea name="Content" placeholder="Що відбулось?" class="post-input">@Model.UpdateBlogPost.Content</textarea>
+                <div class="action-buttons">
+                    <button type="submit" class="post-action-button">Отправить</button>
+                </div>
+            </form>
         </div>
 
         <!-- Место для списка постов -->
         <div class="post-list">
+            @foreach (var post in Model.BlogPosts)
+            {
                 <div class="post">
-                    <img src="" alt="Avatar" class="avatar">
-                    <p>Username</p>
-                    <p>Content</p>
+                    <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
+                    <p>@Model.User.Nickname</p>
+                    <p>@post.Content</p>
                 </div>
+            }
         </div>
     </div>
 </div>
@@ -38,11 +42,11 @@
         text-align: center;
     }
 
-    .left-column .avatar {
+        .left-column .avatar {
             width: 100px;
             height: 100px;
             background-color: red; /* Временно красный квадрат для аватара */
-    }
+        }
 
     .right-column {
         flex-grow: 1;
