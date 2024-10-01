@@ -1,7 +1,98 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model BlogPostViewModel
 
-<p>Тут блог?</p>
+<div class="blog-container">
+    <!-- Левая часть с аватаром и ником -->
+    <div class="left-column">
+        <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
+        <p>@Model.User.Nickname</p>
+    </div>
+
+    <!-- Правая часть с полем для поста -->
+    <div class="right-column">
+        <div class="create-post-box">
+            <form asp-action="CreatePost" method="post">
+                <textarea name="Content" placeholder="Що відбулось?" class="post-input">@Model.UpdateBlogPost.Content</textarea>
+                <div class="action-buttons">
+                    <button type="submit" class="post-action-button">Отправить</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Место для списка постов -->
+        <div class="post-list">
+            @foreach (var post in Model.BlogPosts)
+            {
+                <div class="post">
+                    <img src="@Model.User.AvatarUrl" alt="Avatar" class="avatar">
+                    <p>@Model.User.Nickname</p>
+                    <p>@post.Content</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .blog-container {
+        display: flex;
+    }
+
+    .left-column {
+        width: 200px;
+        text-align: center;
+    }
+
+        .left-column .avatar {
+            width: 100px;
+            height: 100px;
+            background-color: red; /* Временно красный квадрат для аватара */
+        }
+
+    .right-column {
+        flex-grow: 1;
+        padding-left: 20px;
+    }
+
+    .create-post-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .post-input {
+        width: 100%;
+        height: 80px;
+        resize: none;
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .post-action-button {
+        width: 30px;
+        height: 30px;
+        background-color: #ccc;
+        border: none;
+        margin-left: 5px;
+    }
+
+    .post-list .post {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .post .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: grey; /* Временно серый квадрат для аватара */
+        margin-right: 10px;
+    }
+</style>

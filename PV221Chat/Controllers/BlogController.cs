@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using System.Security.Claims;
 
 namespace PV221Chat.Controllers
@@ -47,21 +49,26 @@ namespace PV221Chat.Controllers
                 foreach (var page in Pages)
                 {
                     if (page.Author == userExists) {
-                        BlogPageDTO pageDTO = new BlogPageDTO() { 
-                            AuthorId = page.AuthorId,
-                            BlogId = page.BlogId,
-                            Title = page.Title,
-                            Content = page.Content,
-                            Type = page.Type,
-                            CreatedAt = page.CreatedAt
-                        };
+                        BlogPageDTO pageDTO = BlogMapper.ToDTO(page);
 
                         return View(pageDTO);
                     }
                 }
 
             }
-            return RedirectToAction("Login", "Login");
+            BlogPage page1 = new BlogPage() { 
+                Author = userExists,
+                Title = userExists.Nickname,
+                Content="",
+                Type= "Personal",
+                CreatedAt= DateTime.Now,
+            };
+
+            await _blogPageRepository.AddDataAsync(page1);
+
+            BlogPageDTO pageDTO1 = BlogMapper.ToDTO(page1);
+
+            return View(pageDTO1);
         }
     }
 }

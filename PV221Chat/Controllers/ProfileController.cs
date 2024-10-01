@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using System.Security.Claims;
 
 namespace PV221Chat.Controllers
@@ -17,9 +18,51 @@ namespace PV221Chat.Controllers
             _userRepository = userRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            if (userEmailClaim == null)
+            {
+                ModelState.AddModelError(string.Empty, "User is not authenticated."); 
+
+                return RedirectToAction("Login", "Login");
+            }
+
+            string currentUserEmail = userEmailClaim.Value;
+
+
+            var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
+            if (userExists == null)
+            {
+                ModelState.AddModelError(string.Empty, "User doesn`t exists.");
+                return RedirectToAction("Login", "Login");
+            }
+
+            UserDTO userDTO = UserMapper.ToDTO(userExists);
+            return View(userDTO);
+        }
+        public async Task<IActionResult> ProfileEdit()
+        {
+            var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            if (userEmailClaim == null)
+            {
+                ModelState.AddModelError(string.Empty, "User is not authenticated."); 
+
+                return RedirectToAction("Login", "Login");
+            }
+
+            string currentUserEmail = userEmailClaim.Value;
+
+
+            var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
+            if (userExists == null)
+            {
+                ModelState.AddModelError(string.Empty, "User doesn`t exists.");
+                return RedirectToAction("Login", "Login");
+            }
+
+            UserDTO userDTO = UserMapper.ToDTO(userExists);
+            return View(userDTO);
         }
 
         [HttpPost]
@@ -46,12 +89,8 @@ namespace PV221Chat.Controllers
                 ModelState.AddModelError(string.Empty, "User doesn`t exists.");
                 return View(userDTO);
             }
-            userExists.Nickname = userDTO.Nickname;
-            userExists.Email = userDTO.Email;
-            userExists.AvatarUrl = userDTO.AvatarUrl;
-            userExists.Hobbies = userDTO.Hobbies;
-            userExists.Skills = userDTO.Skills;
-            userExists.BirthDate = userDTO.BirthDate;
+
+            UserMapper.UpdateModel(userDTO, userExists);
 
             await _userRepository.UpdateDataAsync(userExists.UserId, userExists);
 
