@@ -1,6 +1,6 @@
 ﻿using PV221Chat.DTO;
 
-namespace PV221Chat.ViewModels
+namespace PV221Chat.Models
 {
     public class BlogPostViewModel
     {

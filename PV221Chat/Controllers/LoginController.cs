@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using PV221Chat.Core.Repositories;
+using Microsoft.AspNetCore.Identity;
+using PV221Chat.Mapper;
 
 namespace PV221Chat.Controllers
 {
@@ -39,7 +41,7 @@ namespace PV221Chat.Controllers
 
             User user = await _userRepository.FindByEmailAsync(loginDTO.Email);
 
-            if (user != null && user.PasswordHash == CalculateHash(loginDTO.Password, loginDTO.Email))
+            if (user != null && UserMapper.VerifPassword(loginDTO.Password, user.PasswordHash, loginDTO.Email))
             {
                 var claims = new List<Claim>
                 {
@@ -85,13 +87,7 @@ namespace PV221Chat.Controllers
                 return View(userDTO);
             }
 
-            var user = new User
-            {
-                Nickname = userDTO.Nickname,
-                Email = userDTO.Email,
-                PasswordHash = CalculateHash(userDTO.Password, userDTO.Email), // створити хеш пароля
-                CreatedAt = DateTime.UtcNow
-            };
+            var user = UserMapper.ToModel(userDTO);
 
 
             await _userRepository.AddDataAsync(user);
@@ -99,14 +95,14 @@ namespace PV221Chat.Controllers
             BlogPage page = new BlogPage()
             {
                 Author = user,
-                Title = userExists.Nickname,
+                Title = user.Nickname,
                 Content = "",
                 Type = "Personal",
                 CreatedAt = DateTime.Now,
             };
             await _blogPageRepository.AddDataAsync(page);
 
-            return RedirectToAction("Chat","Home");
+            return RedirectToAction("Chat", "Home");
         }
 
         [Authorize]
@@ -116,18 +112,6 @@ namespace PV221Chat.Controllers
 
 
             return RedirectToAction("Login", "Login");
-        }
-
-
-        private string CalculateHash(string clearTextPassword, string salt)
-        {
-            byte[] saltedHashBytes = Encoding.UTF8.GetBytes(clearTextPassword + salt);
-
-            HashAlgorithm algorithm = SHA256.Create();
-
-            byte[] hash = algorithm.ComputeHash(saltedHashBytes);
-
-            return Convert.ToBase64String(hash);
         }
     }
 }
