@@ -4,6 +4,7 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using System.Security.Claims;
 
 namespace PV221Chat.Controllers
@@ -48,14 +49,7 @@ namespace PV221Chat.Controllers
                 foreach (var page in Pages)
                 {
                     if (page.Author == userExists) {
-                        BlogPageDTO pageDTO = new BlogPageDTO() { 
-                            AuthorId = page.AuthorId,
-                            BlogId = page.BlogId,
-                            Title = page.Title,
-                            Content = page.Content,
-                            Type = page.Type,
-                            CreatedAt = page.CreatedAt
-                        };
+                        BlogPageDTO pageDTO = BlogMapper.ToDTO(page);
 
                         return View(pageDTO);
                     }
@@ -72,15 +66,7 @@ namespace PV221Chat.Controllers
 
             await _blogPageRepository.AddDataAsync(page1);
 
-            BlogPageDTO pageDTO1 = new BlogPageDTO()
-            {
-                AuthorId = page1.AuthorId,
-                BlogId = page1.BlogId,
-                Title = page1.Title,
-                Content = page1.Content,
-                Type = page1.Type,
-                CreatedAt = page1.CreatedAt
-            };
+            BlogPageDTO pageDTO1 = BlogMapper.ToDTO(page1);
 
             return View(pageDTO1);
         }
