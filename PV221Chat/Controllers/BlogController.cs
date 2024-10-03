@@ -61,7 +61,7 @@ namespace PV221Chat.Controllers
             BlogPostViewModel viewModel = new BlogPostViewModel
             {
                 User = new UserDTO
-                {
+                { 
                     UserId = userExists.UserId,
                     Nickname = userExists.Nickname,
                     Email = userExists.Email,
