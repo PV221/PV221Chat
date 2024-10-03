@@ -9,7 +9,7 @@
             <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
         </div>
         <div class="image-container">
-            <img src"@Model.AvatarUrl ?? '~/images/default-avatar.jpg' " alt="Profile Image" class="image">
+            <img src="@Model.AvatarUrl ?? Url.Content('~/images/default-avatar.jpg')" alt="Profile Image" class="image">
         </div>
         <div class="info-group">
             <label for="AvatarUrl">Avatar URL:</label>
