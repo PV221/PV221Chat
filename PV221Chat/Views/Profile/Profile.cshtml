@@ -9,7 +9,14 @@
             <span>@Model.Nickname</span>
         </div>
         <div class="image-container">
-            <img src=@Model.AvatarUrl ?? ~/images/default-avatar.jpg" alt="Profile Image" class="image">
+            @if (@Model.AvatarUrl != null)
+            {
+                <img src="@Model.AvatarUrl" alt="Profile Image" class="image">
+            }
+            else
+            {
+                <img src="~/images/default-avatar.jpg" alt="Profile Image" class="image">
+            }
         </div>
         <div class="info-group" style="display: none;">
             <label>Avatar URL:</label>

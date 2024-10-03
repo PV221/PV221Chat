@@ -9,7 +9,14 @@
             <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
         </div>
         <div class="image-container">
-            <img src="@Model.AvatarUrl ?? Url.Content('~/images/default-avatar.jpg')" alt="Profile Image" class="image">
+            @if (@Model.AvatarUrl != null)
+            {
+                <img src="@Model.AvatarUrl" alt="Profile Image" class="image">
+            }
+            else
+            {
+                <img src="~/images/default-avatar.jpg" alt="Profile Image" class="image">
+            }
         </div>
         <div class="info-group">
             <label for="AvatarUrl">Avatar URL:</label>
@@ -20,6 +27,8 @@
     <div class="right-section">
         <form method="post" asp-action="Update">
             <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
+            <input style="display:none" type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
+            <input style="display:none" type="url" id="AvatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" required />
             <div class="info-group">
                 <label for="Email">Email:</label>
                 <input type="email" id="Email" name="Email" value="@Model.Email" required />
