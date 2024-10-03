@@ -2,42 +2,50 @@
 @{
     ViewData["Title"] = "Profile";
 }
-<div class="container">
-    <!-- Left Section with Image -->
+<div class="profile-container">
     <div class="left-section">
-        <!-- Тут есть 'default-avatar.jpg', можно будет сделать просто стандартную аватарку пользователя который ещё её не ставил, или если хотите просто удалите это -->
-        <img src="@Model.AvatarUrl ?? 'default-avatar.jpg'" alt="Profile Image" class="image">
+        <div class="info-group">
+            <label for="Nickname">Nickname:</label>
+            <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
+        </div>
+        <div class="image-container">
+            @if (@Model.AvatarUrl != null)
+            {
+                <img src="@Model.AvatarUrl" alt="Profile Image" class="image">
+            }
+            else
+            {
+                <img src="~/images/default-avatar.jpg" alt="Profile Image" class="image">
+            }
+        </div>
+        <div class="info-group">
+            <label for="AvatarUrl">Avatar URL:</label>
+            <input type="url" id="AvatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" />
+        </div>
     </div>
 
     <div class="right-section">
         <form method="post" asp-action="Update">
             <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
-            <div>
-                <label for="Nickname">Nickname:</label>
-                <input type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
-            </div>
-            <div>
+            <input style="display:none" type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
+            <input style="display:none" type="url" id="AvatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" required />
+            <div class="info-group">
                 <label for="Email">Email:</label>
                 <input type="email" id="Email" name="Email" value="@Model.Email" required />
             </div>
-            <div>
-                <label for="AvatarUrl">Avatar URL:</label>
-                <input type="url" id="AvatarUrl" name="AvatarUrl" value="@Model.AvatarUrl" />
-            </div>
-            <div>
+            <div class="info-group">
                 <label for="Hobbies">Hobbies:</label>
                 <input type="text" id="Hobbies" name="Hobbies" value="@Model.Hobbies" />
             </div>
-            <div>
+            <div class="info-group">
                 <label for="Skills">Skills:</label>
                 <input type="text" id="Skills" name="Skills" value="@Model.Skills" />
             </div>
-            <div>
+            <div class="info-group">
                 <label for="BirthDate">Birth Date:</label>
                 <input type="date" id="BirthDate" name="BirthDate"
                        value="@Model.BirthDate?.ToString("yyyy-MM-dd")" />
             </div>
-            <!-- Тут ссылка на профиль но она через контроллер Home -->
             <div>
                 <button type="submit">Save Changes</button>
                 <label for="text "><a href="@Url.Action("Profile", "Profile")" class="btn btn-link">Return to Profile</a></label>
@@ -47,28 +55,80 @@
 </div>
 
 <style>
-    .container {
+    .profile-container {
         display: flex;
-        align-items: center;
         justify-content: center;
+        padding: 20px;
+        background-color: #f9f9f9;
+            border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto;
     }
 
     .left-section {
         flex: 1;
-        padding-right: 20px;
-    }
+        padding-right: 30px;
+        display: flex;
+            flex-direction: column;
+        align-items: center;
+        border-right: 1px solid #ccc;
+        }
 
-    .image {
-        max-width: 100%;
-        height: auto;
-    }
+        .image-container {
+        margin: 20px 0;
+        width: 150px;
+        height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ddd;
+        }
 
-    .right-section {
-        flex: 2;
-        white-space: pre; <!-- Как я понял, и-за этого поля "отдалены" друг от друга, но зато не друг друга не налазят, пока нормально стилей нет, можно оставить -->
-    }
+        .image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    button:hover {
-        background-color: #45a049;
-    }
-</style >
+        .right-section {
+            flex: 2;
+            padding-left: 30px;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: inline-block;
+            font-weight: bold;
+            margin-right: 10px;
+            color: #333;
+        }
+
+        span {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .profile-container label {
+            font-size: 16px;
+        }
+
+        .profile-container span {
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+</style>

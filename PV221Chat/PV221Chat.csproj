@@ -19,4 +19,10 @@
     <Folder Include="Views\PrivateChat\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\images\default-avatar.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
