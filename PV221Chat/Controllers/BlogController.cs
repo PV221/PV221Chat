@@ -4,11 +4,12 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
-using PV221Chat.Mapper;
+//using PV221Chat.ViewModels;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PV221Chat.Models;
 
 namespace PV221Chat.Controllers
 {
@@ -51,10 +52,59 @@ namespace PV221Chat.Controllers
 
             if (pages == null || !pages.Any())
             {
-                foreach (var page in Pages)
+                Console.WriteLine("No blog pages found.");
+            }
+            else
+            {
+                Console.WriteLine($"Number of blog pages found: {pages.Count()}");
+            }
+
+            BlogPostViewModel viewModel = new BlogPostViewModel
+            {
+                User = new UserDTO
                 {
-                    if (page.Author == userExists) {
-                        BlogPageDTO pageDTO = BlogMapper.ToDTO(page);
+                    UserId = userExists.UserId,
+                    Nickname = userExists.Nickname,
+                    Email = userExists.Email,
+                    AvatarUrl = userExists.AvatarUrl,
+                    Hobbies = userExists.Hobbies,
+                    Skills = userExists.Skills,
+                    BirthDate = userExists.BirthDate,
+                    CreatedAt = userExists.CreatedAt
+                },
+                BlogPosts = new List<BlogPageDTO>()
+            };
+
+            foreach (var page in pages)
+            {
+                Console.WriteLine($"Processing page: {page.Title} by user ID: {page.AuthorId}");
+                if (page.AuthorId == userExists.UserId)
+                {
+                    viewModel.BlogPosts.Add(new BlogPageDTO
+                    {
+                        AuthorId = page.AuthorId,
+                        BlogId = page.BlogId,
+                        Title = page.Title,
+                        Content = page.Content,
+                        Type = page.Type,
+                        CreatedAt = page.CreatedAt
+                    });
+                }
+            }
+
+            Console.WriteLine($"Total blog posts for user: {viewModel.BlogPosts.Count}");
+
+            if (!viewModel.BlogPosts.Any())
+            {
+                Console.WriteLine("No posts found. Creating a new post.");
+                BlogPage newPage = new BlogPage
+                {
+                    Author = userExists,
+                    Title = userExists.Nickname,
+                    Content = "",
+                    Type = "Personal",
+                    CreatedAt = DateTime.Now,
+                };
 
                 await _blogPageRepository.AddDataAsync(newPage);
 
@@ -94,7 +144,7 @@ namespace PV221Chat.Controllers
                 var newPage = new BlogPage
                 {
                     AuthorId = userExists.UserId,
-                    Title = "Новый пост", 
+                    Title = "Новый пост",
                     Content = content,
                     Type = "Личный",
                     CreatedAt = DateTime.Now,
@@ -121,13 +171,18 @@ namespace PV221Chat.Controllers
                     existingPost.Title = updateBlogPost.Title;
                     existingPost.Content = updateBlogPost.Content;
                     existingPost.Type = updateBlogPost.Type;
-                    existingPost.CreatedAt = DateTime.Now; 
+                    existingPost.CreatedAt = DateTime.Now;
 
                     await _blogPageRepository.UpdateDataAsync(existingPost);
                     return RedirectToAction("Index");
                 }
 
-            BlogPageDTO pageDTO1 = BlogMapper.ToDTO(page1);
+                Console.WriteLine($"Post not found with ID: {updateBlogPost.BlogId}");
+            }
+            else
+            {
+                Console.WriteLine("ModelState is not valid.");
+            }
 
             return RedirectToAction("Index");
         }
