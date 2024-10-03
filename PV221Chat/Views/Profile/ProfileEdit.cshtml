@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Profile";
 }
+<form method="post" asp-action="Update">
 <div class="profile-container">
     <div class="left-section">
         <div class="info-group">
@@ -25,10 +26,7 @@
     </div>
 
     <div class="right-section">
-        <form method="post" asp-action="Update">
             <input type="hidden" id="userId" name="UserId" value="@Model.UserId" />
-            <input style="display:none" type="text" id="Nickname" name="Nickname" value="@Model.Nickname" required />
-            <input style="display:none" type="url" id="AvatarUrl" name="AvatarUrl" value="@Model.AvatarUrl"/>
             <div class="info-group">
                 <label for="Email">Email:</label>
                 <input type="email" id="Email" name="Email" value="@Model.Email" required />
@@ -50,9 +48,9 @@
                 <button type="submit">Save Changes</button>
                 <label for="text "><a href="@Url.Action("Profile", "Profile")" class="btn btn-link">Return to Profile</a></label>
             </div>
-        </form>
     </div>
 </div>
+</form>
 
 <style>
     .profile-container {
