@@ -94,7 +94,7 @@ namespace PV221Chat.Controllers
 
             await _userRepository.UpdateDataAsync(userExists.UserId, userExists);
 
-            return RedirectToAction("Chat", "Home");
+            return RedirectToAction("Profile", "Profile");
         }
     }
 }
