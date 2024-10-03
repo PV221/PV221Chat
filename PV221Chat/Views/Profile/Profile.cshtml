@@ -3,14 +3,13 @@
     ViewData["Title"] = "Profile";
 }
 <div class="profile-container">
-    <!-- Left Section with Image -->
     <div class="left-section">
         <div class="info-group">
             <label>Nickname:</label>
             <span>@Model.Nickname</span>
         </div>
         <div class="image-container">
-            <img src="@Model.AvatarUrl ?? 'default-avatar.jpg'" alt="Profile Image" class="image">
+            <img src=@Model.AvatarUrl ?? ~/images/default-avatar.jpg" alt="Profile Image" class="image">
         </div>
         <div class="info-group" style="display: none;">
             <label>Avatar URL:</label>
@@ -41,7 +40,6 @@
                 <label for="CreationDate">Creation Date:</label>
                 <span>@(Model.CreatedAt?.ToString("yyyy-MM-dd"))</span>
             </div>
-            <!-- Тут ссылка на редактирование профиля но она через контроллер Home -->
             <div class="info-group">
                 <label for="text "><a href="@Url.Action("ProfileEdit", "Profile")" class="btn btn-link">Change your information</a></label>
                 @* <button type="button">Change Password</button> *@
