@@ -19,28 +19,28 @@ namespace PV221Chat.Controllers
             _chatRepository = chatRepository;
         }
 
-        public IActionResult Chat()
-        {
-            return View();
-        }
+        //public IActionResult Chat()
+        //{
+        //    return View();
+        //}
 
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [HttpGet("Chat/{id:int}")]
-        public async Task<IActionResult> Chat(int id)
-        {
-            var chat = await _chatRepository.GetDataAsync(id); 
+        //[HttpGet("Chat/{id:int}")]
+        //public async Task<IActionResult> Chat(int id)
+        //{
+        //    var chat = await _chatRepository.GetDataAsync(id); 
 
-            if (chat == null)
-            {
-                return NotFound(); 
-            }
+        //    if (chat == null)
+        //    {
+        //        return NotFound(); 
+        //    }
 
-            return View(chat); 
-        }
+        //    return View(chat); 
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

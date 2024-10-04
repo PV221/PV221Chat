@@ -26,37 +26,34 @@
     }
 </div>
 
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
-    <script type="text/javascript">
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatListHub")
-            .build();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+<script type="text/javascript">
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatListHub")
+        .build();
 
-        connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
-            var chatItem = document.getElementById("chat-" + chatId);
+    connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
+        var chatItem = document.getElementById("chat-" + chatId);
 
-            if (chatItem) {
-                var unreadIcon = chatItem.querySelector(".unread-icon");
-                if (unreadIcon) {
-                    unreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
-                } else {
-                    var newUnreadIcon = document.createElement("span");
-                    newUnreadIcon.className = "unread-icon";
-                    newUnreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
-                    chatItem.querySelector("a").appendChild(newUnreadIcon);
-                }
+        if (chatItem) {
+            var unreadIcon = chatItem.querySelector(".unread-icon");
+            if (unreadIcon) {
+                unreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+            } else {
+                var newUnreadIcon = document.createElement("span");
+                newUnreadIcon.className = "unread-icon";
+                newUnreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+                chatItem.querySelector("a").appendChild(newUnreadIcon);
             }
-        });
+        }
+    });
 
-        connection.start().then(function () {
-            console.log("SignalR connected");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-    </script>
-}
-
+    connection.start().then(function () {
+        console.log("SignalR connected");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>
 
 <style>
     .chat-list {

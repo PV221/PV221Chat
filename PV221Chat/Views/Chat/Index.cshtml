@@ -1,6 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Chat Application";
+    ViewData["Title"] = "Chat page";
+    int chatId = Model?.ChatId ?? 0;
 }
+
 
 <div class="container layout-container">
     <div class="chatList-section">
@@ -8,11 +10,27 @@
     </div>
 
     <div class="chat-section">
-        @*  @await Component.InvokeAsync("Chat") *@
+        <div class="chat-container">
+
+            @if (chatId != 0)
+            {
+                <div class="chat-header">
+                    <h2>@Model.ChatName</h2>
+                </div>
+
+                @await Component.InvokeAsync("Chat", new { chatId = chatId })
+            }
+            
+        </div>
     </div>
 
     <div class="member-section">
-        @await Component.InvokeAsync("MemberList")
+
+        @if (chatId != 0)
+        {
+            @await Component.InvokeAsync("MemberList", new { chatId = chatId })
+        }
+
     </div>
 </div>
 
