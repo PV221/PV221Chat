@@ -1,4 +1,5 @@
-﻿using PV221Chat.Core.DataContext;
+﻿using Microsoft.EntityFrameworkCore;
+using PV221Chat.Core.DataContext;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories.EF;
@@ -9,5 +10,18 @@ public class MessageRepository : EFRepository<Message>, IMessageRepository
 {
     public MessageRepository(Pv221chatContext context) : base(context)
     {
+    }
+
+    public async Task<List<Message>> GetByChatIdAndSorted(int chatId, int limit)
+    {
+        var messages = await _context.Messages
+                         .Where(m => m.ChatId == chatId && (m.IsDeleted == false || m.IsDeleted == null))
+                         .OrderByDescending(m => m.SentAt)
+                         .Take(limit)
+                         .ToListAsync();
+
+        messages.Reverse();
+
+        return messages;
     }
 }
