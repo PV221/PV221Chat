@@ -96,5 +96,25 @@ namespace PV221Chat.Controllers
 
             return RedirectToAction("Profile", "Profile");
         }
+
+        public async Task<IActionResult> Profiles()
+        {
+            var allUsers = await _userRepository.GetListDataAsync();
+            var userDTOs = allUsers.Select(user => UserMapper.ToDTO(user)).ToList();
+
+            return View(userDTOs);
+        }
+
+        public async Task<IActionResult> Profile(int id)
+        {
+            var userExists = await _userRepository.GetDataAsync(id);
+            if (userExists == null)
+            {
+                return NotFound($"User with id {id} not found.");
+            }
+
+            UserDTO userDTO = UserMapper.ToDTO(userExists);
+            return View(userDTO);
+        }
     }
 }
