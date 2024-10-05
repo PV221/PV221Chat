@@ -47,7 +47,7 @@
     connectionChatListHub.on("ReceiveNotification", function (chatId, message) {
 
         if(chatIdViewBag != chatId){
-            var chatItem = document.getElementById("chat-" + chatId);
+            var chatItem = document.getElementById("#chat-" + chatId);
 
             if(chatItem) {
                 var unreadIcon = chatItem.querySelector(".unread-icon");
@@ -62,7 +62,7 @@
                     chatItem.querySelector("a").appendChild(newUnreadIcon);
                 }
 
-                const gridContainer = document.getElementById("grid-container");
+                const gridContainer = document.getElementById("#grid-container");
                 gridContainer.insertBefore(chatItem, gridContainer.firstChild);
 
             }
