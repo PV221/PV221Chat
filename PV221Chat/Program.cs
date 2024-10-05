@@ -59,7 +59,7 @@ app.UseAuthorization();
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<ChatListHub>("/chatListHub");
 
-app.MapHub<ChatHub>("/globalChatHub");
+app.MapHub<GlobalChatHub>("/globalChatHub");
 
 app.MapControllerRoute(
     name: "default",
