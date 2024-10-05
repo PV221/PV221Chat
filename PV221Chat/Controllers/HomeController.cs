@@ -30,7 +30,7 @@ namespace PV221Chat.Controllers
 
         public IActionResult Chat()
         {
-            var messages = new List<MessageDTO>(); 
+            var messages = new List<MessageDTO>();
             return View(messages);
         }
 
@@ -39,12 +39,14 @@ namespace PV221Chat.Controllers
             return View();
         }
 
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SendMessage(string message)
         {
 
             var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-            User userExists = await _userRepository.FindByEmailAsync(userEmailClaim.ToString());
+            User userExists = await _userRepository.FindByEmailAsync(userEmailClaim.Value);
             var messageDto = new
             {
                 MessageId = Guid.NewGuid(),

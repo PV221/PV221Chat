@@ -2,6 +2,7 @@
 
 @if (Model != null && Model.Any())
 {
+    <div id="chatMessages">
     @foreach (var message in Model)
     {
         <div class="message-@message.SenderId"
@@ -11,6 +12,7 @@
             <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
         </div>
     }
+    </div>
 }
 else
 {
@@ -35,7 +37,7 @@ else
 
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("SendMessage", "GlobalChat")',
+                url: '@Url.Action("SendMessage", "Home")',
                 data: { message: message },
                 success: function (response) {
                     alert("Сообщение отправлено!");
@@ -59,12 +61,12 @@ else
                     });
 
                     // Добавляем новое сообщение на страницу
-                    $('#chatMessages').append(`
-                            <div class="message-sent" id="message-id-${newMessage.MessageId}">
-                                <div class="message-content">${newMessage.MessageText}</div>
-                                <div class="message-time">${formattedTime}</div>
-                            </div>
-                        `);
+                    // $('#chatMessages').append(`
+                    //         <div class="message-sent" id="message-id-${newMessage.MessageId}">
+                    //             <div class="message-content">${newMessage.MessageText}</div>
+                    //             <div class="message-time">${formattedTime}</div>
+                    //         </div>
+                    //     `);
 
                 },
                 error: function (xhr, status, error) {
@@ -76,7 +78,7 @@ else
 
     // Подключаем SignalR хаб
     const connectionChatHub = new signalR.HubConnectionBuilder()
-        .withUrl("/globalChattHub")  // подключаемся к хабу чата
+        .withUrl("/globalChatHub")  // подключаемся к хабу чата
         .build();
 
     // Событие получения сообщения от других пользователей
