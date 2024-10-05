@@ -58,15 +58,6 @@
                         hour12: false 
                     });
 
-
-                    // add more elements in this place
-                    $('#chatMessages').append(`
-                        <div class="message-sent" id="message-id-${newMessage.MessageId}">
-                            <div class="message-content">${newMessage.MessageText}</div>
-                            <div class="message-time">${formattedTime}</div>
-                        </div>
-                    `);
-
                 },
                 error: function (xhr, status, error) {
                     alert("Failed");
@@ -102,16 +93,6 @@
         console.log("SignalR connected");
     }).catch(function (err) {
         return console.error(err.toString());
-    });
-
-    // connection.on("ReceiveMessage", function (user, message) {
-    //     const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    //     const encodedMsg = user + " говорит: " + msg;
-    //     const chatMessages = document.getElementById("chatMessages");
-    //     chatMessages.innerHTML += `<div class="message received"><div class="message-content">${encodedMsg}</div></div>`;
-    //     chatMessages.scrollTop = chatMessages.scrollHeight;
-    // });
-
-        
+    });        
     
 </script>

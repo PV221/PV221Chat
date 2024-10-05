@@ -7,27 +7,37 @@ public class ChatListHub : Hub
 {
     public override async Task OnConnectedAsync()
     {
-        var chatId = Context.GetHttpContext().Request.Query["chatId"];
-        
-        if (chatId.IsNullOrEmpty())
+        var chatIdsQueryString = Context.GetHttpContext().Request.Query["chatIds"].ToString();
+
+        if (string.IsNullOrEmpty(chatIdsQueryString))
         {
             return;
         }
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+        var chatIds = chatIdsQueryString.Split(',');
+
+        foreach (var chatId in chatIds)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+        }
+
         await base.OnConnectedAsync();
     }
 
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        var chatId = Context.GetHttpContext().Request.Query["chatId"];
+        var chatIdsQueryString = Context.GetHttpContext().Request.Query["chatIds"].ToString();
 
-        if (chatId.IsNullOrEmpty())
+        if (!string.IsNullOrEmpty(chatIdsQueryString))
         {
-            return;
+            var chatIds = chatIdsQueryString.Split(',');
+
+            foreach (var chatId in chatIds)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
+            }
         }
 
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
         await base.OnDisconnectedAsync(exception);
     }
 }
