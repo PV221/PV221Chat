@@ -43,7 +43,7 @@ namespace PV221Chat.Controllers
             var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
             var user = await _userRepository.FindByEmailAsync(email);
 
-            if (user == null && chatId != 0)
+            if (user != null && chatId != 0)
             {
                 var userChat = await _userChatRepository.FindUserChatByUserIdAndChatIdAsync(user.UserId, chatId);
 
