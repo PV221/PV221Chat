@@ -2,7 +2,8 @@
 
 @if (Model != null && Model.Any())
 {
-    <div id="chatMessages">
+
+    <div class="chat-messages" id="chatMessages">
     @foreach (var message in Model)
     {
             <div class="message-@message.MessageType"
@@ -90,8 +91,8 @@ else
         });
 
         $('#chatMessages').append(`
-                <div class="message-sent" id="message-id-${message.MessageId}">
-                    <div class="message-content">${message.MessageText}</div>
+                <div class="message-sent" id="message-id-${message.messageId}">
+                    <div class="message-content">${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
             `);
