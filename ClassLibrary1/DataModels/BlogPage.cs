@@ -19,5 +19,7 @@ public partial class BlogPage
 
     public virtual User? Author { get; set; }
 
+    public virtual BlogPost? BlogPost { get; set; }
+
     public virtual ICollection<BlogSubscription> BlogSubscriptions { get; set; } = new List<BlogSubscription>();
 }
