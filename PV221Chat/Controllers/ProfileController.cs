@@ -12,10 +12,14 @@ namespace PV221Chat.Controllers
     public class ProfileController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IChatRepository _chatRepository;
+        private readonly IUserChatRepository _userChatRepository;
 
-        public ProfileController(IUserRepository userRepository)
+        public ProfileController(IUserRepository userRepository, IChatRepository chatRepository, IUserChatRepository userChatRepository)
         {
             _userRepository = userRepository;
+            _chatRepository = chatRepository;
+            _userChatRepository = userChatRepository;
         }
 
         public async Task<IActionResult> ProfileEdit()
@@ -115,6 +119,52 @@ namespace PV221Chat.Controllers
 
             UserDTO userDTO2 = UserMapper.ToDTO(userExists1);
             return View(userDTO2);
+        }
+
+        public async Task<IActionResult> AddToPrivatChat(int userIdToAdd)
+        {
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+
+            var user = await _userRepository.FindByEmailAsync(email);
+            if (user == null || userIdToAdd == 0)
+            {
+                ViewBag.Message = "User not found.";
+                return NotFound(); 
+            }
+
+            var chat = await _userRepository.GetPrivateChatBetweenUsersAsync(user.UserId, userIdToAdd);
+            if (chat != null)
+            {
+                ViewBag.Message = "You already have a chat with this user.";
+                return RedirectToAction("Index", "Chat");
+            }
+
+            chat = await _chatRepository.CreatePrivateChatAsync(user.UserId, userIdToAdd);
+            if (chat == null)
+            {
+                ViewBag.Message = "An error occurred while creating the chat.";
+                return BadRequest();
+            }
+
+            UserChat userChat1 = new UserChat
+            {
+                UserId = user.UserId,
+                ChatId = chat.ChatId,
+                IsAdmin = true
+            };
+
+            UserChat userChat2 = new UserChat
+            {
+                UserId = userIdToAdd,
+                ChatId = chat.ChatId,
+                IsAdmin = true
+            };
+
+            await _userChatRepository.AddDataAsync(userChat1);
+            await _userChatRepository.AddDataAsync(userChat2);
+
+            return RedirectToAction("Index", "Chat");
         }
     }
 }
