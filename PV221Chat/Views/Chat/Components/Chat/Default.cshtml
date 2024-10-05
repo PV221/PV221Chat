@@ -1,7 +1,5 @@
 ﻿@model List<PV221Chat.DTO.MessageDTO>
 
-
-
 <div class="chat-messages" id="chatMessages">
     @foreach (var message in Model)
     {
@@ -75,25 +73,24 @@
                 }
             });
         });
-    });
 
     console.log(@ViewBag.chatId);
 
     const connectionChatHub = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub?chatId=${@ViewBag.chatId}")
+        .withUrl("/chatHub?chatId=@ViewBag.chatId")
         .build();
 
         connectionChatHub.on("ReceiveMessage", function (chatId, message) {
        
-            const formattedTime = new Date(message.SentAt).toLocaleTimeString([], { 
+            const formattedTime = new Date(message.sentAt).toLocaleTimeString([], { 
                         hour: '2-digit', 
                         minute: '2-digit', 
                         hour12: false 
                     });
 
             $('#chatMessages').append(`
-                        <div class="message-sent" id="message-id-${message.MessageId}">
-                            <div class="message-content">${message.MessageText}</div>
+                        <div class="message-sent" id="message-id-${message.messageId}">
+                            <div class="message-content">${message.messageText}</div>
                             <div class="message-time">${formattedTime}</div>
                         </div>
                     `);
