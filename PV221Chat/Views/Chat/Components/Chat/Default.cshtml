@@ -1,57 +1,99 @@
 ﻿@model List<PV221Chat.DTO.MessageDTO>
 
 
-<div>
-    <div class="chat-messages" id="chatMessages">
-        @foreach (var message in Model)
-        {
-            <div class="message @(message.SenderId.ToString() == User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value ? "sent" : "received")">
-                <div class="message-content">@message.MessageText</div>
-                <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
-            </div>
-        }
-    </div>
 
-    <div class="chat-input">
-        <input type="text" id="messageInput" placeholder="Введите сообщение..." />
-        <button id="sendMessageButton">Отправить</button>
-    </div>
+<div class="chat-messages" id="chatMessages">
+    @foreach (var message in Model)
+    {
+        <div class="message-@message.MessageType"
+             id="message-id-@message.MessageId">
+
+            <div class="message-content">@message.MessageText</div>
+            <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
+        </div>
+    }
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.18/signalr.min.js"></script>
+<div class="chat-input">
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Введите сообщение..." required />
+        <button type="submit">Отправить</button>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+
 
 <script>
-    const currentUserId = "@User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value";
-    const currentUserName = "@User.Identity.Name";
+    $(document).ready(function () {
+        $('#messageForm').submit(function (e) {
+            e.preventDefault();
+
+            var chatId = @ViewBag.chatId; 
+            var message = $('#messageInput').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SendMessage", "Chat")',
+                data: { chatId: chatId, message: message },
+                success: function (response) {
+                    alert("Successfully!");
+                    $('#messageInput').val(''); 
+
+                    console.log(response);
+
+                     const newMessage = {
+                        MessageId: response.messageId,
+                        ChatId: response.chatId,
+                        SenderId: response.senderId,
+                        MessageType: response.messageType,
+                        SenderName: response.senderName,
+                        MessageText: response.messageText,
+                        SentAt: response.sentAt,
+                        IsDeleted: response.isDeleted
+                    };
+
+                     const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: false 
+                    });
+
+
+                    // add more elements in this place
+                    $('#chatMessages').append(`
+                        <div class="message-sent" id="message-id-${newMessage.MessageId}">
+                            <div class="message-content">${newMessage.MessageText}</div>
+                            <div class="message-time">${formattedTime}</div>
+                        </div>
+                    `);
+
+                },
+                error: function (xhr, status, error) {
+                    alert("Failed");
+                }
+            });
+        });
+    });
+</script>
+
+<script>
 
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/chatHub")
         .build();
 
-    document.getElementById("sendMessageButton").disabled = true;
 
-    connection.start().then(function () {
-        document.getElementById("sendMessageButton").disabled = false;
-    }).catch(function (err) {
-        return console.error(err.toString());
-    });
 
-    connection.on("ReceiveMessage", function (user, message) {
-        const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        const encodedMsg = user + " говорит: " + msg;
-        const chatMessages = document.getElementById("chatMessages");
-        chatMessages.innerHTML += `<div class="message received"><div class="message-content">${encodedMsg}</div></div>`;
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
+    // connection.on("ReceiveMessage", function (user, message) {
+    //     const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    //     const encodedMsg = user + " говорит: " + msg;
+    //     const chatMessages = document.getElementById("chatMessages");
+    //     chatMessages.innerHTML += `<div class="message received"><div class="message-content">${encodedMsg}</div></div>`;
+    //     chatMessages.scrollTop = chatMessages.scrollHeight;
+    // });
 
-    document.getElementById("sendMessageButton").addEventListener("click", function (event) {
-        const message = document.getElementById("messageInput").value;
-        if (message.trim() !== '') {
-            connection.invoke("SendMessage", currentUserName, message).catch(function (err) {
-                return console.error(err.toString());
-            });
-            document.getElementById('messageInput').value = '';
-        }
-        event.preventDefault();
-    });
+        
+    
 </script>
