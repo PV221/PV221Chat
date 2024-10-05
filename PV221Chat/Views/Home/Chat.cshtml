@@ -5,7 +5,7 @@
     <div id="chatMessages">
     @foreach (var message in Model)
     {
-        <div class="message-@message.SenderId"
+            <div class="message-@message.MessageType"
              id="message-id-@message.MessageId">
 
             <div class="message-content">@message.MessageText</div>
