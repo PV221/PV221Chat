@@ -3,6 +3,7 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using System.Data;
 using System.Security.Claims;
 
 namespace PV221Chat.ViewComponents
@@ -12,12 +13,14 @@ namespace PV221Chat.ViewComponents
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly INotificationRepository _notificationRepository;
+        private readonly IMessageRepository _messageRepository;
 
-        public ChatListViewComponent(IUserRepository userRepository, IChatRepository chatRepository, INotificationRepository notificationRepository)
+        public ChatListViewComponent(IUserRepository userRepository, IChatRepository chatRepository, INotificationRepository notificationRepository, IMessageRepository messageRepository)
         {
             _userRepository = userRepository;
             _chatRepository = chatRepository;
             _notificationRepository = notificationRepository;
+            _messageRepository = messageRepository;
         }
         public async Task<IViewComponentResult> InvokeAsync(int chatId)
         {
@@ -64,7 +67,6 @@ namespace PV221Chat.ViewComponents
                     {
                         var user = users.FirstOrDefault(u => u.UserId != userId);
                         chat.ChatName = user.Nickname;
-
                     }
                 }
 
@@ -75,6 +77,14 @@ namespace PV221Chat.ViewComponents
                     text = unreadNotifications.Last().NotificationText;
                 }
 
+                var lastMessage = await _messageRepository.FindLastMessageByChatIdAsync(chat.ChatId);
+                var lastMessageAt = chat.CreatedAt;
+
+                if (lastMessage != null)
+                {
+                    lastMessageAt = lastMessage.SentAt;
+                }
+
                 chatDTOs.Add(new ChatDTO
                 {
                     ChatId = chat.ChatId,
@@ -82,11 +92,14 @@ namespace PV221Chat.ViewComponents
                     ChatType = chat.ChatType,
                     IsOpen = chat.IsOpen, 
                     CreatedAt = chat.CreatedAt,
+                    LastMessageAt = lastMessageAt,
                     HasUnreadMessages = unreadNotifications.Any(),
                     TextUnreadMessages = text,
                     CountUnreadMessages = unreadNotifications.Count()
                 });
             }
+
+            chatDTOs.OrderBy(chatDTO => chatDTO.LastMessageAt);
 
             return chatDTOs;
         }
