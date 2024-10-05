@@ -82,9 +82,9 @@ namespace PV221Chat.Controllers
             return View(userDTOs);
         }
 
-        public async Task<IActionResult> Profile(int? id)
+        public async Task<IActionResult> Profile(int? userId)
         {
-            if (id == null) 
+            if (userId == null) 
             { 
                 var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
                 if (userEmailClaim == null)
@@ -107,10 +107,10 @@ namespace PV221Chat.Controllers
                 UserDTO userDTO = UserMapper.ToDTO(userExists);
                 return View(userDTO);
             }
-            var userExists1 = await _userRepository.GetDataAsync((int)id);
+            var userExists1 = await _userRepository.GetDataAsync((int)userId);
             if (userExists1 == null)
             {
-                return NotFound($"User with id {id} not found.");
+                return NotFound($"User with id {userId} not found.");
             }
 
             UserDTO userDTO2 = UserMapper.ToDTO(userExists1);
