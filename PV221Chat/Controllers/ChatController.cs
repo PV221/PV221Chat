@@ -24,13 +24,15 @@ namespace PV221Chat.Controllers
             _messageExtension = messageExtension;
             _userRepository = userRepository;
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
             ViewBag.ChatId = 0;
             return View();
         }
 
-        [HttpGet("Chat/{chatId:int}")]
+        [HttpPost]
         public async Task<IActionResult> Index(int chatId)
         {
             var chat = await _chatRepository.GetDataAsync(chatId);

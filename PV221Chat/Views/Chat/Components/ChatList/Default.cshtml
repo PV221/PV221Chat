@@ -7,15 +7,18 @@
             @foreach (var chat in Model)
             {
                 <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
-                    <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">
-                        <strong>@chat.ChatName</strong>
-                        @if (chat.HasUnreadMessages)
-                        {
-                            <span class="unread-icon">
-                                🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
-                            </span>
-                        }
-                    </a>
+                    <form asp-controller="Chat" asp-action="Index" method="post">
+                        <input type="hidden" name="chatId" value="@chat.ChatId" />
+                        <button type="submit" class="chat-link">
+                            <strong>@chat.ChatName</strong>
+                            @if (chat.HasUnreadMessages)
+                            {
+                                <span class="unread-icon">
+                                    🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
+                                </span>
+                            }
+                        </button>
+                    </form>
                 </div>
             }
         </div>
@@ -28,11 +31,11 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
 <script type="text/javascript">
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatListHub")
+    const connectionChatListHub = new signalR.HubConnectionBuilder()
+        .withUrl("/chatListHub")// edit this place(group)
         .build();
 
-    connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
+    connectionChatListHub.on("ReceiveNotification", function (chatId, message, unreadCount) {
         var chatItem = document.getElementById("chat-" + chatId);
 
         if (chatItem) {
@@ -48,7 +51,7 @@
         }
     });
 
-    connection.start().then(function () {
+    connectionChatListHub.start().then(function () {
         console.log("SignalR connected");
     }).catch(function (err) {
         return console.error(err.toString());

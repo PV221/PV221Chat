@@ -25,7 +25,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
 
 
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
         $('#messageForm').submit(function (e) {
             e.preventDefault();
@@ -76,15 +76,35 @@
             });
         });
     });
-</script>
 
-<script>
+    console.log(@ViewBag.chatId);
 
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chatHub")
+    const connectionChatHub = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub?chatId=${@ViewBag.chatId}")
         .build();
 
+        connectionChatHub.on("ReceiveMessage", function (chatId, message) {
+       
+            const formattedTime = new Date(message.SentAt).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: false 
+                    });
 
+            $('#chatMessages').append(`
+                        <div class="message-sent" id="message-id-${message.MessageId}">
+                            <div class="message-content">${message.MessageText}</div>
+                            <div class="message-time">${formattedTime}</div>
+                        </div>
+                    `);
+
+    });
+
+    connectionChatHub.start().then(function () {
+        console.log("SignalR connected");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
 
     // connection.on("ReceiveMessage", function (user, message) {
     //     const msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
