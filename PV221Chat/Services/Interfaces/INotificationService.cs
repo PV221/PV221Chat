@@ -2,6 +2,6 @@
 {
     public interface INotificationService
     {
-        Task SendNewNotificationAsync(int chatId, string message, int unreadCount);
+        Task SendNewNotificationAsync(int chatId, string message);
     }
 }

@@ -63,14 +63,14 @@ namespace PV221Chat.Controllers
         [HttpGet("Chat/{id:int}")]
         public async Task<IActionResult> Chat(int id)
         {
-            var chat = await _chatRepository.GetDataAsync(id); 
+            var chat = await _chatRepository.GetDataAsync(id);
 
             if (chat == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-            return View(chat); 
+            return View(chat);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

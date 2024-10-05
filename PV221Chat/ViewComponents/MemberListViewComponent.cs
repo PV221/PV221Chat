@@ -15,16 +15,14 @@ namespace PV221Chat.ViewComponents
             _userRepository = userRepository;
             _chatRepository = chatRepository;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int chatId)
         {
-            var member = await GetMembersAsync();
-            return View(member);
+            var members = await GetMembersAsync(chatId);
+            return View(members);
         }
 
-        private async Task<List<MemberDTO>> GetMembersAsync()
+        private async Task<List<MemberDTO>> GetMembersAsync(int chatId)
         {
-            int chatId = 1; // temp
-
             var claimsPrincipal = User as ClaimsPrincipal;
             var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
             var user = await _userRepository.FindByEmailAsync(email);
@@ -32,10 +30,10 @@ namespace PV221Chat.ViewComponents
             var users = await _chatRepository.GetUsersByChatId(chatId);
 
 
-            return await ConvertUserToMemberDTO(users, user.UserId);
+            return ConvertUserToMemberDTO(users, user.UserId);
         }
 
-        private async Task<List<MemberDTO>> ConvertUserToMemberDTO(IEnumerable<User> users, int userId)
+        private List<MemberDTO> ConvertUserToMemberDTO(IEnumerable<User> users, int userId)
         {
             List<MemberDTO> memberDTOs = new List<MemberDTO>();
 
@@ -46,7 +44,7 @@ namespace PV221Chat.ViewComponents
                     UserId = user.UserId,
                     Nickname = user.Nickname,
                     Email = user.Email,
-                    AvatarUrl = user.AvatarUrl // temp
+                    AvatarUrl = user.AvatarUrl
                 });
             }
 

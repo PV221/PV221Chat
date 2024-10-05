@@ -25,4 +25,21 @@ public class NotificationRepository : EFRepository<Notification>, INotificationR
             .Include(uc => uc.User)
             .ToListAsync();
     }
+
+    public async Task ReadNotifiByUserChatId(int userChatId)
+    {
+        var notifications = await _context.Notifications
+            .Where(n => n.UserChatId == userChatId && n.IsRead == false)
+            .ToListAsync();
+
+        if (notifications != null && notifications.Count > 0)
+        {
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+    }
 }

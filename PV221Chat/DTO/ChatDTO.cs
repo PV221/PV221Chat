@@ -1,4 +1,6 @@
-﻿namespace PV221Chat.DTO
+﻿using System.Data;
+
+namespace PV221Chat.DTO
 {
     public class ChatDTO
     {
@@ -7,6 +9,7 @@
         public string ChatType { get; set; }
         public bool IsOpen { get; set; }
         public DateTime? CreatedAt { get; set; }
+        public DateTime? LastMessageAt { get; set; }
         public bool HasUnreadMessages { get; set; }
         public string? TextUnreadMessages { get; set; }
         public int CountUnreadMessages { get; set; }

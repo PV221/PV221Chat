@@ -1,29 +1,60 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.Models;
+using PV221Chat.Services;
+using PV221Chat.Services.Interfaces;
+using System;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace PV221Chat.Controllers
 {
     [Authorize]
     public class ChatController : Controller
     {
+        private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
-        public ChatController(IChatRepository chatRepository)
+        private readonly IMessageExtension _messageExtension;
+        private readonly IUserChatRepository _userChatRepository;
+        private readonly INotificationRepository _notificationRepository;
+        public ChatController(IChatRepository chatRepository, IMessageExtension messageExtension, IUserRepository userRepository, IUserChatRepository userChatRepository, INotificationRepository notificationRepository)
         {
             _chatRepository = chatRepository;
+            _messageExtension = messageExtension;
+            _userRepository = userRepository;
+            _userChatRepository = userChatRepository;
+            _notificationRepository = notificationRepository;
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
+            ViewBag.ChatId = 0;
             return View();
         }
 
-        [HttpGet("Chat/{id:int}")]
-        public async Task<IActionResult> Index(int id)
+        [HttpPost]
+        public async Task<IActionResult> Index(int chatId)
         {
-            var chat = await _chatRepository.GetDataAsync(id);
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userRepository.FindByEmailAsync(email);
+
+            if (user != null && chatId != 0)
+            {
+                var userChat = await _userChatRepository.FindUserChatByUserIdAndChatIdAsync(user.UserId, chatId);
+
+                if(userChat != null)
+                {
+                    await _notificationRepository.ReadNotifiByUserChatId(userChat.UserChatId);
+                }
+            }
+
+
+            var chat = await _chatRepository.GetDataAsync(chatId);
 
             if (chat == null)
             {
@@ -37,6 +68,18 @@ namespace PV221Chat.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendMessage(int chatId, string message)
+        {
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userRepository.FindByEmailAsync(email);
+
+            var messageDTO = await _messageExtension.SendMessageAsync(chatId, message, user.UserId);
+
+            return Ok(messageDTO);
         }
     }
 }
