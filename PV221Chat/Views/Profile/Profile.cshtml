@@ -22,6 +22,9 @@
             <label>Avatar URL:</label>
             <span>@Model.AvatarUrl</span>
         </div>
+        <a href="@Url.Action("AddToPrivatChat", "Chat", new { userIdToAdd = Model.UserId })">
+            Start Private Chat with @Model.Nickname
+        </a>
     </div>
 
     <div class="right-section">

@@ -18,29 +18,6 @@ namespace PV221Chat.Controllers
             _userRepository = userRepository;
         }
 
-        public async Task<IActionResult> Profile()
-        {
-            var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-            if (userEmailClaim == null)
-            {
-                ModelState.AddModelError(string.Empty, "User is not authenticated."); 
-
-                return RedirectToAction("Login", "Login");
-            }
-
-            string currentUserEmail = userEmailClaim.Value;
-
-
-            var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
-            if (userExists == null)
-            {
-                ModelState.AddModelError(string.Empty, "User doesn`t exists.");
-                return RedirectToAction("Login", "Login");
-            }
-
-            UserDTO userDTO = UserMapper.ToDTO(userExists);
-            return View(userDTO);
-        }
         public async Task<IActionResult> ProfileEdit()
         {
             var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
@@ -95,6 +72,49 @@ namespace PV221Chat.Controllers
             await _userRepository.UpdateDataAsync(userExists.UserId, userExists);
 
             return RedirectToAction("Profile", "Profile");
+        }
+
+        public async Task<IActionResult> Profiles()
+        {
+            var allUsers = await _userRepository.GetListDataAsync();
+            var userDTOs = allUsers.Select(user => UserMapper.ToDTO(user)).ToList();
+
+            return View(userDTOs);
+        }
+
+        public async Task<IActionResult> Profile(int? id)
+        {
+            if (id == null) 
+            { 
+                var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+                if (userEmailClaim == null)
+                {
+                    ModelState.AddModelError(string.Empty, "User is not authenticated.");
+
+                    return RedirectToAction("Login", "Login");
+                }
+
+                string currentUserEmail = userEmailClaim.Value;
+
+
+                var userExists = await _userRepository.FindByEmailAsync(currentUserEmail);
+                if (userExists == null)
+                {
+                    ModelState.AddModelError(string.Empty, "User doesn`t exists.");
+                    return RedirectToAction("Login", "Login");
+                }
+
+                UserDTO userDTO = UserMapper.ToDTO(userExists);
+                return View(userDTO);
+            }
+            var userExists1 = await _userRepository.GetDataAsync((int)id);
+            if (userExists1 == null)
+            {
+                return NotFound($"User with id {id} not found.");
+            }
+
+            UserDTO userDTO2 = UserMapper.ToDTO(userExists1);
+            return View(userDTO2);
         }
     }
 }
