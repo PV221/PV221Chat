@@ -9,7 +9,7 @@
 
     @if (Model != null && Model.Count > 0)
     {
-        <div class="grid-container">
+        <div class="grid-container" id="grid-container">
             @foreach (var chat in Model)
             {
                 <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
@@ -61,6 +61,10 @@
                     newUnreadIcon.innerHTML = "🔔 " + message;
                     chatItem.querySelector("a").appendChild(newUnreadIcon);
                 }
+
+                const gridContainer = document.getElementById("grid-container");
+                gridContainer.insertBefore(chatItem, gridContainer.firstChild);
+
             }
         }
     });
