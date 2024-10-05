@@ -43,7 +43,6 @@ else
                     alert("Сообщение отправлено!");
                     $('#messageInput').val('');
 
-                    console.log(response);
 
                     const newMessage = {
                         MessageId: response.messageId,
@@ -83,15 +82,17 @@ else
 
     // Событие получения сообщения от других пользователей
     connectionChatHub.on("ReceiveMessage", function (message) {
-        const formattedTime = new Date(message.SentAt).toLocaleTimeString([], {
+        const formattedTime = new Date(message.sentAt).toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
         });
 
+        console.log(message);
+
         $('#chatMessages').append(`
-                <div class="message-sent" id="message-id-${message.MessageId}">
-                    <div class="message-content">${message.MessageText}</div>
+                <div class="message-sent" id="message-id-${message.messageId}">
+                    <div class="message-content">${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
             `);

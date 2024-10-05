@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.Core.Repositories.EF;
@@ -19,6 +20,7 @@ public static class ServiceProviderExtensions
         services.AddTransient<IUserChatRepository, UserChatRepository>();
         services.AddTransient<IUserRatingRepository, UserRatingRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IGlobalChatMessageRepository, GlobalChatMessageRepository>();
 
         services.AddTransient<IDataRepository<BlockedUserRepository>, EFRepository<BlockedUserRepository>>();
         services.AddTransient<IDataRepository<BlogPageRepository>, EFRepository<BlogPageRepository>>();
@@ -30,5 +32,6 @@ public static class ServiceProviderExtensions
         services.AddTransient<IDataRepository<UserChatRepository>, EFRepository<UserChatRepository>>();
         services.AddTransient<IDataRepository<UserRatingRepository>, EFRepository<UserRatingRepository>>();
         services.AddTransient<IDataRepository<UserRepository>, EFRepository<UserRepository>>();
+        services.AddTransient<IDataRepository<GlobalChatMessage>, EFRepository<UserRepository>>();
     }
 }
