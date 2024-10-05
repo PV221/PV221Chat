@@ -1,21 +1,30 @@
-﻿<div class="chat-list">
+﻿@model List<PV221Chat.DTO.ChatDTO>
+@{
+    var chatIds = Model.Select(chat => chat.ChatId).ToList();
+    var chatIdsJson = Json.Serialize(chatIds);
+}
+
+<div class="chat-list">
     <h3>Chat List</h3>
 
     @if (Model != null && Model.Count > 0)
     {
-        <div class="grid-container">
+        <div class="grid-container" id="grid-container">
             @foreach (var chat in Model)
             {
                 <div class="chat-item" id="chat-@chat.ChatId" data-chat-name="@chat.ChatName">
-                    <a asp-controller="Chat" asp-action="Index" asp-route-chatId="@chat.ChatId">
-                        <strong>@chat.ChatName</strong>
-                        @if (chat.HasUnreadMessages)
-                        {
-                            <span class="unread-icon">
-                                🔔 @chat.CountUnreadMessages - @chat.TextUnreadMessages
-                            </span>
-                        }
-                    </a>
+                    <form asp-controller="Chat" asp-action="Index" method="post">
+                        <input type="hidden" name="chatId" value="@chat.ChatId" />
+                        <button type="submit" class="chat-link">
+                            <strong>@chat.ChatName</strong>
+                            @if (chat.HasUnreadMessages)
+                            {
+                                <span class="unread-icon">
+                                    🔔 @chat.TextUnreadMessages
+                                </span>
+                            }
+                        </button>
+                    </form>
                 </div>
             }
         </div>
@@ -26,37 +35,47 @@
     }
 </div>
 
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
-    <script type="text/javascript">
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatListHub")
-            .build();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+<script type="text/javascript">
+    const chatIds = @chatIdsJson;
+    const chatIdViewBag = @ViewBag.ChatId;
 
-        connection.on("ReceiveNotification", function (chatId, message, unreadCount) {
+    const connectionChatListHub = new signalR.HubConnectionBuilder()
+        .withUrl(`/chatListHub?chatIds=${chatIds.join(',')}`)
+        .build();
+
+    connectionChatListHub.on("ReceiveNotification", function (chatId, message) {
+
+        if(chatIdViewBag != chatId){
             var chatItem = document.getElementById("chat-" + chatId);
 
-            if (chatItem) {
+            if(chatItem) {
                 var unreadIcon = chatItem.querySelector(".unread-icon");
+
+
                 if (unreadIcon) {
-                    unreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+                    unreadIcon.innerHTML = "🔔 " + message;
                 } else {
                     var newUnreadIcon = document.createElement("span");
                     newUnreadIcon.className = "unread-icon";
-                    newUnreadIcon.innerHTML = "🔔 " + unreadCount + " - " + message;
+                    newUnreadIcon.innerHTML = "🔔 " + message;
                     chatItem.querySelector("a").appendChild(newUnreadIcon);
                 }
+
+                const gridContainer = document.getElementById("grid-container");
+                gridContainer.insertBefore(chatItem, gridContainer.firstChild);
+
             }
-        });
+        }
+    });
 
-        connection.start().then(function () {
-            console.log("SignalR connected");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-    </script>
-}
+    connectionChatListHub.start().then(function () {
+        console.log("SignalR connected");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
 
+</script>
 
 <style>
     .chat-list {

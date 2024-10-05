@@ -13,9 +13,9 @@ public class NotificationService : INotificationService
         _hubContext = hubContext;
     }
 
-    public async Task SendNewNotificationAsync(int chatId, string message, int unreadCount)
+    public async Task SendNewNotificationAsync(int chatId, string message)
     {
         await _hubContext.Clients.Group(chatId.ToString())
-            .SendAsync("ReceiveNotification", chatId, message, unreadCount);
+            .SendAsync("ReceiveNotification", chatId, message);
     }
 }

@@ -6,4 +6,5 @@ public interface INotificationRepository : IDataRepository<Notification>
 {
     Task<IEnumerable<Notification>> GetUnreadNotificationsByUserAndChatIdAsync(int chatId, int userId);
     Task<List<UserChat>> GetUsersInChatExceptSenderAsync(int chatId, int senderId);
+    Task ReadNotifiByUserChatId(int userChatId);
 }

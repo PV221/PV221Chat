@@ -7,8 +7,9 @@ namespace PV221Chat.Services
     {
         public static void AddService(this IServiceCollection services)
         {
-            services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IMessageExtension, MessageExtension>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IMessageService, MessageService>();
         }
     }
 }
