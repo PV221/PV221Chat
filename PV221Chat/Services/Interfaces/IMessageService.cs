@@ -1,7 +1,9 @@
-﻿namespace PV221Chat.Services.Interfaces
+﻿using PV221Chat.DTO;
+
+namespace PV221Chat.Services.Interfaces
 {
     public interface IMessageService
     {
-        Task SendMessageAsync(int chatId, string messageText, int senderId);
+        Task SendNewMessageAsync(int chatId, MessageDTO message);
     }
 }
