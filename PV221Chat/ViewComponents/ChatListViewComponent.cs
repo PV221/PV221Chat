@@ -66,6 +66,13 @@ namespace PV221Chat.ViewComponents
                     }
                 }
 
+                var text = "";
+
+                if(unreadNotifications.Count() != 0)
+                {
+                    text = unreadNotifications.Last().NotificationText;
+                }
+
                 chatDTOs.Add(new ChatDTO
                 {
                     ChatId = chat.ChatId,
@@ -74,7 +81,7 @@ namespace PV221Chat.ViewComponents
                     IsOpen = chat.IsOpen, 
                     CreatedAt = chat.CreatedAt,
                     HasUnreadMessages = unreadNotifications.Any(),
-                    TextUnreadMessages = unreadNotifications.Last().NotificationText,
+                    TextUnreadMessages = text,
                     CountUnreadMessages = unreadNotifications.Count()
                 });
             }
