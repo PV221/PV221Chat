@@ -99,7 +99,7 @@ namespace PV221Chat.ViewComponents
                 });
             }
 
-            chatDTOs.OrderBy(chatDTO => chatDTO.LastMessageAt);
+            chatDTOs.OrderBy(chatDTO => chatDTO.LastMessageAt).Reverse();
 
             return chatDTOs;
         }
