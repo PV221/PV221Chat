@@ -19,8 +19,10 @@ namespace PV221Chat.ViewComponents
             _chatRepository = chatRepository;
             _notificationRepository = notificationRepository;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int chatId)
         {
+            ViewBag.ChatId = chatId;
+
             var chats = await GetChatsAsync(); 
             return View(chats);
         }

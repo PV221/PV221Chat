@@ -38,25 +38,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
 <script type="text/javascript">
     const chatIds = @chatIdsJson;
+    const chatIdViewBag = @ViewBag.ChatId;
 
     const connectionChatListHub = new signalR.HubConnectionBuilder()
         .withUrl(`/chatListHub?chatIds=${chatIds.join(',')}`)
         .build();
 
     connectionChatListHub.on("ReceiveNotification", function (chatId, message) {
-        var chatItem = document.getElementById("chat-" + chatId);
-        
-        if (chatItem) {
-            var unreadIcon = chatItem.querySelector(".unread-icon");
+
+        if(chatIdViewBag != chatId){
+            var chatItem = document.getElementById("chat-" + chatId);
+
+            if(chatItem) {
+                var unreadIcon = chatItem.querySelector(".unread-icon");
 
 
-            if (unreadIcon) {
-                unreadIcon.innerHTML = "🔔 " + message;
-            } else {
-                var newUnreadIcon = document.createElement("span");
-                newUnreadIcon.className = "unread-icon";
-                newUnreadIcon.innerHTML = "🔔 " + message;
-                chatItem.querySelector("a").appendChild(newUnreadIcon);
+                if (unreadIcon) {
+                    unreadIcon.innerHTML = "🔔 " + message;
+                } else {
+                    var newUnreadIcon = document.createElement("span");
+                    newUnreadIcon.className = "unread-icon";
+                    newUnreadIcon.innerHTML = "🔔 " + message;
+                    chatItem.querySelector("a").appendChild(newUnreadIcon);
+                }
             }
         }
     });
