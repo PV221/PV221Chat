@@ -5,6 +5,7 @@
         public int MessageId { get; set; }
         public int? ChatId { get; set; }
         public int? SenderId { get; set; }
+        public string MessageType { get; set; } = null!;
         public string SenderName { get; set; } = null!;
         public string MessageText { get; set; } = null!;
         public DateTime? SentAt { get; set; }
