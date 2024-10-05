@@ -21,9 +21,13 @@ public partial class Pv221chatContext : DbContext
 
     public virtual DbSet<BlogPage> BlogPages { get; set; }
 
+    public virtual DbSet<BlogPost> BlogPosts { get; set; }
+
     public virtual DbSet<BlogSubscription> BlogSubscriptions { get; set; }
 
     public virtual DbSet<Chat> Chats { get; set; }
+
+    public virtual DbSet<GlobalChatMessage> GlobalChatMessages { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
 
@@ -83,6 +87,19 @@ public partial class Pv221chatContext : DbContext
                 .HasConstraintName("FK__BlogPages__Autho__36B12243");
         });
 
+        modelBuilder.Entity<BlogPost>(entity =>
+        {
+            entity.ToTable("BlogPost");
+
+            entity.Property(e => e.BlogPostId).ValueGeneratedNever();
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
+            entity.Property(e => e.Title).HasMaxLength(50);
+
+            entity.HasOne(d => d.BlogPostNavigation).WithOne(p => p.BlogPost)
+                .HasForeignKey<BlogPost>(d => d.BlogPostId)
+                .HasConstraintName("FK_BlogPost_BlogPages");
+        });
+
         modelBuilder.Entity<BlogSubscription>(entity =>
         {
             entity.HasKey(e => e.SubscriptionId).HasName("PK__BlogSubs__9A2B249D02618BE4");
@@ -113,6 +130,20 @@ public partial class Pv221chatContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<GlobalChatMessage>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("GlobalChatMessage");
+
+            entity.Property(e => e.CreateAt).HasColumnType("datetime");
+            entity.Property(e => e.MessageText).HasMaxLength(255);
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_GlobalChatMessage_Users");
         });
 
         modelBuilder.Entity<Message>(entity =>

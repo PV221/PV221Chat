@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore; 
+﻿using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
