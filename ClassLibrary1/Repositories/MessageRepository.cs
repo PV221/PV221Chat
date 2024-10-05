@@ -21,6 +21,14 @@ public class MessageRepository : EFRepository<Message>, IMessageRepository
         return message;
     }
 
+    public async Task<Message?> FindLastMessageByChatIdAsync(int chatId)
+    {
+        return await _context.Messages
+            .Where(m => m.ChatId == chatId) 
+            .OrderByDescending(m => m.SentAt) 
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<List<Message>> GetByChatIdAndSortedAsync(int chatId, int limit)
     {
         var messages = await _context.Messages
