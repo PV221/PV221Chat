@@ -1,6 +1,104 @@
-﻿
-@{
-}
-<h1>@ViewData["Title"]</h1>
+﻿@model List<PV221Chat.DTO.MessageDTO>
 
-<p>страница чата</p>
+@if (Model != null && Model.Any())
+{
+    @foreach (var message in Model)
+    {
+        <div class="message-@message.SenderId"
+             id="message-id-@message.MessageId">
+
+            <div class="message-content">@message.MessageText</div>
+            <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
+        </div>
+    }
+}
+else
+{
+    <p>No messages available.</p>
+}
+<div class="chat-input">
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Введите сообщение..." required />
+        <button type="submit">Отправить</button>
+    </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#messageForm').submit(function (e) {
+            e.preventDefault();
+
+            var message = $('#messageInput').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SendMessage", "GlobalChat")',
+                data: { message: message },
+                success: function (response) {
+                    alert("Сообщение отправлено!");
+                    $('#messageInput').val('');
+
+                    console.log(response);
+
+                    const newMessage = {
+                        MessageId: response.messageId,
+                        SenderId: response.senderId,
+                        MessageType: response.messageType,
+                        SenderName: response.senderName,
+                        MessageText: response.messageText,
+                        SentAt: response.sentAt
+                    };
+
+                    const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+
+                    // Добавляем новое сообщение на страницу
+                    $('#chatMessages').append(`
+                            <div class="message-sent" id="message-id-${newMessage.MessageId}">
+                                <div class="message-content">${newMessage.MessageText}</div>
+                                <div class="message-time">${formattedTime}</div>
+                            </div>
+                        `);
+
+                },
+                error: function (xhr, status, error) {
+                    alert("Ошибка при отправке сообщения");
+                }
+            });
+        });
+    });
+
+    // Подключаем SignalR хаб
+    const connectionChatHub = new signalR.HubConnectionBuilder()
+        .withUrl("/globalChattHub")  // подключаемся к хабу чата
+        .build();
+
+    // Событие получения сообщения от других пользователей
+    connectionChatHub.on("ReceiveMessage", function (message) {
+        const formattedTime = new Date(message.SentAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+
+        $('#chatMessages').append(`
+                <div class="message-sent" id="message-id-${message.MessageId}">
+                    <div class="message-content">${message.MessageText}</div>
+                    <div class="message-time">${formattedTime}</div>
+                </div>
+            `);
+    });
+
+    // Стартуем подключение к хабу
+    connectionChatHub.start().then(function () {
+        console.log("SignalR подключен к глобальному чату");
+    }).catch(function (err) {
+        console.error("Ошибка подключения SignalR", err.toString());
+    });
+</script>
