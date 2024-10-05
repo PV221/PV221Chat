@@ -18,11 +18,15 @@ namespace PV221Chat.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IMessageExtension _messageExtension;
-        public ChatController(IChatRepository chatRepository, IMessageExtension messageExtension, IUserRepository userRepository)
+        private readonly IUserChatRepository _userChatRepository;
+        private readonly INotificationRepository _notificationRepository;
+        public ChatController(IChatRepository chatRepository, IMessageExtension messageExtension, IUserRepository userRepository, IUserChatRepository userChatRepository, INotificationRepository notificationRepository)
         {
             _chatRepository = chatRepository;
             _messageExtension = messageExtension;
             _userRepository = userRepository;
+            _userChatRepository = userChatRepository;
+            _notificationRepository = notificationRepository;
         }
 
         [HttpGet]
@@ -35,6 +39,21 @@ namespace PV221Chat.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int chatId)
         {
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userRepository.FindByEmailAsync(email);
+
+            if (user == null && chatId != 0)
+            {
+                var userChat = await _userChatRepository.FindUserChatByUserIdAndChatIdAsync(user.UserId, chatId);
+
+                if(userChat != null)
+                {
+                    await _notificationRepository.ReadNotifiByUserChatId(userChat.UserChatId);
+                }
+            }
+
+
             var chat = await _chatRepository.GetDataAsync(chatId);
 
             if (chat == null)
