@@ -147,23 +147,6 @@ namespace PV221Chat.Controllers
                 return BadRequest();
             }
 
-            UserChat userChat1 = new UserChat
-            {
-                UserId = user.UserId,
-                ChatId = chat.ChatId,
-                IsAdmin = true
-            };
-
-            UserChat userChat2 = new UserChat
-            {
-                UserId = userIdToAdd,
-                ChatId = chat.ChatId,
-                IsAdmin = true
-            };
-
-            await _userChatRepository.AddDataAsync(userChat1);
-            await _userChatRepository.AddDataAsync(userChat2);
-
             return RedirectToAction("Index", "Chat");
         }
     }
