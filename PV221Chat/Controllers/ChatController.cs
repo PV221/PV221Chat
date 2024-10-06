@@ -10,6 +10,7 @@ using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;
 using System;
 using System.Diagnostics;
+using System.Net.WebSockets;
 using System.Security.Claims;
 
 namespace PV221Chat.Controllers
@@ -106,12 +107,40 @@ namespace PV221Chat.Controllers
             var users = await _userRepository.GetListDataAsync();
             var usersDTO = users.Select(user => UserMapper.ToDTO(user)).ToList();
 
+            var chat = await _chatRepository.GetDataAsync(chatId);
+
             var groupEditDTO = new GroupEditDTO
             {
+                chatId = chatId,
+                GroupName = chat.ChatName,
                 users = usersDTO
             };
 
             return View(groupEditDTO);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGroup(int chatId, string groupName, List<int> userIds)
+        {
+            var chat = await _chatRepository.GetDataAsync(chatId);
+            chat.ChatName = groupName;
+
+            await _chatRepository.UpdateDataAsync(chat.ChatId, chat);
+
+            foreach(int userId in userIds)
+            {
+                var userChat = new UserChat
+                {
+                    UserId = userId,
+                    ChatId  = chatId,
+                    IsAdmin = false,
+                    MembershipStatus = "Accepted"
+                };
+
+                await _userChatRepository.AddDataAsync(userChat);
+            }
+
+            return RedirectToAction("Index", "Chat");
         }
     }
 }

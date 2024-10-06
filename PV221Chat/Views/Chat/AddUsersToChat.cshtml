@@ -6,9 +6,9 @@
 
 <h2>Add Users to Chat</h2>
 
-<div class="">
-    <h4>Group Name</h4>
-    <input type="text" id="groupName" value="temo" required/>
+<div class="form-group-name">
+    <label for="groupNameInput">Group Name</label>
+    <input type="text" id="groupNameInput" class="form-control" value="@Model.GroupName" required />
 </div>
 
 <div class="form-group">
@@ -38,14 +38,31 @@
     </ul>
 </div>
 
-<!-- Confirm Button -->
-<button type="button" class="btn btn-primary mt-3" onclick="confirmUsersToChat()">
-    Confirm
-</button>
+<form asp-action="UpdateGroup" asp-controller="Chat" method="post">
+    <input type="hidden" name="chatId" value="@Model.chatId" />
+    <input type="hidden" id="groupName" name="groupName"/>
+    <input type="hidden" id="userIds" name="userIds" />
+
+    <button type="button" class="btn btn-primary mt-3" onclick="submitForm()">
+        Confirm
+    </button>
+</form>
 
 <script type="text/javascript">
     // List to store selected user IDs
     let selectedUsers = [];
+
+    function submitForm() {
+        console.log(document.getElementById("groupNameInput").value);
+
+        var groupNameInputValue = document.getElementById("groupNameInput").value;
+        document.getElementById("groupName").value = groupNameInputValue;
+
+        console.log(document.getElementById("groupName").value);
+
+        document.getElementById("userIds").value = selectedUsers.join(',');
+        document.forms[0].submit();
+    }
 
     // Function to add user to the selected users list
     function addUserToChat(userId, nickname) {
@@ -78,12 +95,6 @@
 
         // Re-enable the "Add to Chat" button for this user
         document.getElementById('add-user-' + userId).disabled = false;
-    }
-
-    // Function to confirm selected users to chat
-    function confirmUsersToChat() {
-        console.log('Selected users:', selectedUsers);
-        // Handle the confirmation logic (AJAX call or form submission)
     }
 
     // Function to filter users based on search input
