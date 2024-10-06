@@ -6,7 +6,7 @@
         <div class="message-@message.MessageType"
              id="message-id-@message.MessageId">
 
-            <div class="message-content">@message.MessageText</div>
+            <div class="message-content">@message.SenderName : @message.MessageText</div>
             <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
         </div>
     }
@@ -36,28 +36,7 @@
                 url: '@Url.Action("SendMessage", "Chat")',
                 data: { chatId: chatId, message: message },
                 success: function (response) {
-                    // alert("Successfully!");
                     $('#messageInput').val(''); 
-
-                    console.log(response);
-
-                     const newMessage = {
-                        MessageId: response.messageId,
-                        ChatId: response.chatId,
-                        SenderId: response.senderId,
-                        MessageType: response.messageType,
-                        SenderName: response.senderName,
-                        MessageText: response.messageText,
-                        SentAt: response.sentAt,
-                        IsDeleted: response.isDeleted
-                    };
-
-                    //  const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], { 
-                    //     hour: '2-digit', 
-                    //     minute: '2-digit', 
-                    //     hour12: false 
-                    // });
-
                 },
                 error: function (xhr, status, error) {
                     alert("Failed");
@@ -81,7 +60,7 @@
 
             $('#chatMessages').append(`
                         <div class="message-sent" id="message-id-${message.messageId}">
-                            <div class="message-content">${message.messageText}</div>
+                                <div class="message-content">${message.senderName}: ${message.messageText}</div>
                             <div class="message-time">${formattedTime}</div>
                         </div>
                     `);
