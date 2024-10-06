@@ -54,7 +54,7 @@ namespace PV221Chat.Controllers
                     RedirectToAction("Logout", "Login");
             }
 
-            var messageDTO = await _messageExtension.SendMessageToGlobalChatAsync( message, userExists.UserId);
+            var messageDTO = await _messageExtension.SendMessageToGlobalChatAsync(message, userExists.UserId);
 
             return Ok(messageDTO);
         }

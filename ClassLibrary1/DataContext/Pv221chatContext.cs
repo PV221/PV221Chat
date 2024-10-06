@@ -135,8 +135,7 @@ public partial class Pv221chatContext : DbContext
         modelBuilder.Entity<GlobalChatMessage>(entity =>
         {
             entity
-                .HasNoKey()
-                .ToTable("GlobalChatMessage");
+                .HasKey(e=>e.MessageGcId).HasName("PK__GlobalChatMessages__B22DEBA9B22DEB");
 
             entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.MessageText).HasMaxLength(255);

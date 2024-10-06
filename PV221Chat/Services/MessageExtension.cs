@@ -41,12 +41,14 @@ namespace PV221Chat.Services
 
         public async Task<GlobalChatMessageDTO> SendMessageToGlobalChatAsync(string messageText, int senderId)
         {
+            var list = await _globalChatMessageRepository.GetListDataAsync();
             var globalChatMessage = new GlobalChatMessage
             {
+                MessageGcId = list.Count()+1,
                 UserId = senderId,
                 MessageText = messageText,
                 CreateAt = DateTime.UtcNow
-            };
+            }; 
 
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
 
