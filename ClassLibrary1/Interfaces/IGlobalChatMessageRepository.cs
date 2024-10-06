@@ -9,5 +9,6 @@ namespace PV221Chat.Core.Interfaces
 {
     public interface IGlobalChatMessageRepository : IDataRepository<GlobalChatMessage>
     {
+        Task<GlobalChatMessage> AddDataReturnedMessageAsync(GlobalChatMessage message);
     }
 }

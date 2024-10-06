@@ -15,5 +15,14 @@ namespace PV221Chat.Core.Repositories
         public GlobalChatMessageRepository(Pv221chatContext context) : base(context)
         {
         }
+
+        public async Task<GlobalChatMessage> AddDataReturnedMessageAsync(GlobalChatMessage message)
+        {
+            await _context.GlobalChatMessages.AddAsync(message);
+            await _context.SaveChangesAsync();
+
+            return message;
+        }
+
     }
 }
