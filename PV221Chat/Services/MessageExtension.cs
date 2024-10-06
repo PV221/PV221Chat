@@ -48,12 +48,13 @@ namespace PV221Chat.Services
                 UserId = senderId,
                 MessageText = messageText,
                 CreateAt = DateTime.UtcNow
-            }; 
-
+            };
+            Console.WriteLine(globalChatMessage.MessageText + " " + globalChatMessage.MessageGcId);
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
 
             var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage);
 
+            Console.WriteLine(globalChatMessageDTO.MessageText + " " + globalChatMessageDTO.MessageGcId);
             await _messageService.SendNewMessageToGlobalMessageAsync(globalChatMessageDTO);
             return globalChatMessageDTO;
 
