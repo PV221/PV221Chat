@@ -49,6 +49,7 @@ namespace PV221Chat.Services
                 CreateAt = DateTime.UtcNow
             };
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
+
             string nameUser= (await _userRepository.GetDataAsync(senderId)).Nickname;
             var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage, nameUser);
 

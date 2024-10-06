@@ -47,6 +47,7 @@ namespace PV221Chat.Controllers
         {
             return View();
         }
+
         [HttpGet]
         [HttpPost]
         public async Task<IActionResult> Chat()

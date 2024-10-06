@@ -9,7 +9,7 @@
         <div class="message-@message.UserId"
              id="message-id-@message.MessageGcId">
 
-            <div class="message-content">@message.MessageText</div>
+            <div class="message-content">@message.SenderName: @message.MessageText</div>
             <div class="message-time">@message.CreateAt.ToString("HH:mm")</div>
         </div>
     }
@@ -45,7 +45,6 @@ else
                     $('#messageInput').val('');
 
                     
-                    console.log(response);
 
                     const newMessage = {
                         MessageId: response.messageGcId,
@@ -94,8 +93,7 @@ else
 
         $('#chatMessages').append(`
                     <div class="message-sent" id="message-id-${message.messageGcId}">
-                    <div class="message-content">${message.senderName}</div>
-                    <div class="message-content">${message.messageText}</div>
+                    <div class="message-content">${message.senderName}: ${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
             `);
