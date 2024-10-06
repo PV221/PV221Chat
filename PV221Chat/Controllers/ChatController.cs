@@ -108,10 +108,10 @@ namespace PV221Chat.Controllers
 
             var groupEditDTO = new GroupEditDTO
             {
-                use
+                users = usersDTO
             };
 
-            return View(usersDTO);
+            return View(groupEditDTO);
         }
     }
 }
