@@ -6,6 +6,8 @@ using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
 using PV221Chat.Models;
+using PV221Chat.Services;
+using PV221Chat.Services.Interfaces;
 using PV221Chat.SignalR;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -19,8 +21,9 @@ namespace PV221Chat.Controllers
         private readonly IChatRepository _chatRepository;
         private readonly IHubContext<GlobalChatHub> _hubContext;
         private readonly IUserRepository _userRepository;
+        private readonly IMessageExtension _messageExtension;
 
-        public HomeController(IUserRepository userRepository, ILogger<HomeController> logger, IChatRepository chatRepository, IHubContext<GlobalChatHub> hubContext)
+        public HomeController(IUserRepository userRepository, ILogger<HomeController> logger, IChatRepository chatRepository, IHubContext<GlobalChatHub> hubContext,IMessageExtension messageExtension)
         {
             _logger = logger;
             _chatRepository = chatRepository;
@@ -40,24 +43,20 @@ namespace PV221Chat.Controllers
         }
 
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SendMessage(string message)
         {
 
             var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             User userExists = await _userRepository.FindByEmailAsync(userEmailClaim.Value);
-            var messageDto = new
+            if (userExists == null)
             {
-                MessageId = Guid.NewGuid(),
-                SenderId = userExists.Email,  
-                MessageText = message,
-                SentAt = DateTime.Now
-            };
+                    RedirectToAction("Logout", "Login");
+            }
 
-            await _hubContext.Clients.Group("GlobalChat").SendAsync("ReceiveMessage", messageDto);
+            var messageDTO = await _messageExtension.SendMessageToGlobalChatAsync( message, userExists.UserId);
 
-            return Json(messageDto);
+            return Ok(messageDTO);
         }
 
         [HttpGet("Chat/{id:int}")]

@@ -38,7 +38,7 @@ namespace PV221Chat.Services
         }
 
 
-        public async Task<MessageDTO> SendMessageToGlobalChatAsync(string messageText, int senderId)
+        public async Task<GlobalChatMessage> SendMessageToGlobalChatAsync(string messageText, int senderId)
         {
             var globalChatMessage = new GlobalChatMessage
             {
@@ -49,14 +49,9 @@ namespace PV221Chat.Services
 
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
 
-            var message = new MessageDTO()
-            {
 
-            };
-
-
-            await _globalChatHubContext.Clients.Group("GlobalChat")
-                 .SendAsync("ReceiveMessage", message);
+            await _messageService.SendNewMessageToGlobalMessageAsync( globalChatMessage);
+            return globalChatMessage;
 
         }
 

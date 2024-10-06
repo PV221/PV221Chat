@@ -32,6 +32,6 @@ public static class ServiceProviderExtensions
         services.AddTransient<IDataRepository<UserChatRepository>, EFRepository<UserChatRepository>>();
         services.AddTransient<IDataRepository<UserRatingRepository>, EFRepository<UserRatingRepository>>();
         services.AddTransient<IDataRepository<UserRepository>, EFRepository<UserRepository>>();
-        services.AddTransient<IDataRepository<GlobalChatMessage>, EFRepository<UserRepository>>();
+        services.AddTransient<IDataRepository<GlobalChatMessageRepository>, EFRepository<GlobalChatMessageRepository>>();
     }
 }
