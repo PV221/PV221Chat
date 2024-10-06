@@ -5,6 +5,7 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using PV221Chat.Models;
 using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;

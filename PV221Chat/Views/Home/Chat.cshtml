@@ -2,7 +2,8 @@
 
 @if (Model != null && Model.Any())
 {
-    <div id="chatMessages">
+
+    <div class="chat-messages" id="chatMessages">
     @foreach (var message in Model)
     {
         <div class="message-@message.UserId"

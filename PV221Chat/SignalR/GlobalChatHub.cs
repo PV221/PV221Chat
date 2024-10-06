@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using PV221Chat.Mapper;
 using System.Text.RegularExpressions;
 
 namespace PV221Chat.SignalR
