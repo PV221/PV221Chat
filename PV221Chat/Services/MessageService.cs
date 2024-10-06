@@ -9,10 +9,12 @@ namespace PV221Chat.Services
     public class MessageService : IMessageService
     {
         private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IHubContext<GlobalChatHub> _hubGlobalChatContext;
 
-        public MessageService(IHubContext<ChatHub> hubContext)
+        public MessageService(IHubContext<ChatHub> hubContext, IHubContext<GlobalChatHub> hubGlobalChatContext)
         {
             _hubContext = hubContext;
+            _hubGlobalChatContext = hubGlobalChatContext;
         }
 
         public async Task SendNewMessageAsync(int chatId, MessageDTO message)
@@ -22,7 +24,7 @@ namespace PV221Chat.Services
         }
         public async Task SendNewMessageToGlobalMessageAsync(GlobalChatMessageDTO message)
         {
-            await _hubContext.Clients.Group("GlobalChat")
+            await _hubGlobalChatContext.Clients.Group("GlobalChat")
                 .SendAsync("ReceiveMessage", message);
         }
     }
