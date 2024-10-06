@@ -35,6 +35,8 @@ public partial class User
 
     public virtual ICollection<BlogSubscription> BlogSubscriptions { get; set; } = new List<BlogSubscription>();
 
+    public virtual ICollection<GlobalChatMessage> GlobalChatMessages { get; set; } = new List<GlobalChatMessage>();
+
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public virtual ICollection<ModerationLog> ModerationLogModerators { get; set; } = new List<ModerationLog>();

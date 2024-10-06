@@ -134,13 +134,15 @@ public partial class Pv221chatContext : DbContext
 
         modelBuilder.Entity<GlobalChatMessage>(entity =>
         {
-            entity
-                .HasKey(e=>e.MessageGcId).HasName("PK__GlobalChatMessages__B22DEBA9B22DEB");
+            entity.HasKey(e => e.MessageGcId);
 
+            entity.ToTable("GlobalChatMessage");
+
+            entity.Property(e => e.MessageGcId).ValueGeneratedNever();
             entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.MessageText).HasMaxLength(255);
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.GlobalChatMessages)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_GlobalChatMessage_Users");
         });
