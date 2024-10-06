@@ -10,6 +10,8 @@ using PV221Chat.Models;
 using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;
 using PV221Chat.SignalR;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -23,27 +25,54 @@ namespace PV221Chat.Controllers
         private readonly IHubContext<GlobalChatHub> _hubContext;
         private readonly IUserRepository _userRepository;
         private readonly IMessageExtension _messageExtension;
+        private readonly IGlobalChatMessageRepository _globalChatMessageRepository;
 
-        public HomeController(IUserRepository userRepository, ILogger<HomeController> logger, IChatRepository chatRepository, IHubContext<GlobalChatHub> hubContext,IMessageExtension messageExtension)
+        public HomeController(IGlobalChatMessageRepository globalChatMessageRepository,IUserRepository userRepository, ILogger<HomeController> logger, IChatRepository chatRepository, IHubContext<GlobalChatHub> hubContext,IMessageExtension messageExtension)
         {
             _logger = logger;
             _chatRepository = chatRepository;
             _hubContext = hubContext;
             _userRepository = userRepository;
             _messageExtension = messageExtension;
+            _globalChatMessageRepository = globalChatMessageRepository;
         }
-
-        public IActionResult Chat()
-        {
-            var messages = new List<GlobalChatMessageDTO>();
-            return View(messages);
-        }
+        //[HttpGet]
+        //public IActionResult Chat()
+        //{
+        //    var messages = new List<GlobalChatMessageDTO>();
+        //    return View(messages);
+        //}
 
         public IActionResult Privacy()
         {
             return View();
         }
+        [HttpGet]
+        [HttpPost]
+        public async Task<IActionResult> Chat()
+        {
+            var claimsPrincipal = User as ClaimsPrincipal;
+            var email = claimsPrincipal?.FindFirst(ClaimTypes.Email)?.Value;
+            var user = await _userRepository.FindByEmailAsync(email);
 
+            if (user == null)
+            {
+                RedirectToAction("Logout", "Login");
+            }
+            
+            var list= await _globalChatMessageRepository.GetListDataAsync();
+            List<GlobalChatMessageDTO> listDTO = new List<GlobalChatMessageDTO>(); ;
+            if (list != null)
+            {
+                foreach (var item in list)
+                {
+                    var dto = GlobalChatMessageMapper.ToDTO(item, (await _userRepository.GetDataAsync(item.UserId)).Nickname);
+                    listDTO.Add(dto);
+
+                }
+            }
+            return View(listDTO);
+        }
 
         [HttpPost]
         public async Task<IActionResult> SendMessage(string message)
@@ -61,18 +90,18 @@ namespace PV221Chat.Controllers
             return Ok(messageDTO);
         }
 
-        [HttpGet("Chat/{id:int}")]
-        public async Task<IActionResult> Chat(int id)
-        {
-            var chat = await _chatRepository.GetDataAsync(id);
+        //[HttpGet("Chat/{id:int}")]
+        //public async Task<IActionResult> Chat(int id)
+        //{
+        //    var chat = await _chatRepository.GetDataAsync(id);
 
-            if (chat == null)
-            {
-                return NotFound();
-            }
+        //    if (chat == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(chat);
-        }
+        //    return View(chat);
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

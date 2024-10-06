@@ -44,20 +44,22 @@ else
                     // alert("Сообщение отправлено!");
                     $('#messageInput').val('');
 
+                    
+                    console.log(response);
 
                     const newMessage = {
-                        MessageId: response.MessageGcId,
-                        SenderId: response.UserId,
-                        MessageText: response.MessageText,
-                        CreateAt: response.CreateAt,
-                        SenderName: response.SenderName
+                        MessageId: response.messageGcId,
+                        SenderId: response.userId,
+                        MessageText: response.messageText,
+                        CreateAt: response.createAt,
+                        SenderName: response.senderName
                     };
 
-                    const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    });
+                    // const formattedTime = new Date(newMessage.CreateAt).toLocaleTimeString([], {
+                    //     hour: '2-digit',
+                    //     minute: '2-digit',
+                    //     hour12: false
+                    // });
 
                     // Добавляем новое сообщение на страницу
                     // $('#chatMessages').append(`
@@ -82,7 +84,7 @@ else
 
     // Событие получения сообщения от других пользователей
     connectionChatHub.on("ReceiveMessage", function (message) {
-        const formattedTime = new Date(message.CreateAt).toLocaleTimeString([], {
+        const formattedTime = new Date(message.createAt).toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
@@ -91,8 +93,8 @@ else
         console.log(message);
 
         $('#chatMessages').append(`
-                    <div class="message-sent" id="message-id-${message.MessageGcId}">
-                    <div class="message-content">${message.SenderName}</div>
+                    <div class="message-sent" id="message-id-${message.messageGcId}">
+                    <div class="message-content">${message.senderName}</div>
                     <div class="message-content">${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
