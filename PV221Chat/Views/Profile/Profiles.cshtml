@@ -1,0 +1,109 @@
+﻿@using System.Security.Claims
+@model IEnumerable<PV221Chat.DTO.UserDTO>
+@{
+    ViewData["Title"] = "Search Users";
+}
+
+<div class="search-container">
+    <h2>Search for Users</h2>
+    <form method="get" asp-action="SearchUser">
+        <div class="search-group">
+            <label for="searchTerm">Search by Email or Nickname:</label>
+            <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter email or nickname" required />
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <h3>Search Results:</h3>
+        <div class="user-list">
+            @foreach (var user in Model)
+            {
+                <div class="user-card">
+                    <div class="user-info">
+                        <strong>Nickname:</strong> @user.Nickname <br />
+                        <strong>Email:</strong> @user.Email
+                    </div>
+                    <div class="user-actions">
+                        <a href="@Url.Action("Profile", "Profile", new { userId = user.UserId })" class="btn btn-link">View Profile</a>
+                        @if (user.Email != (User as ClaimsPrincipal)?.FindFirst(ClaimTypes.Email)?.Value)
+                        {
+                            <a href="@Url.Action("AddToPrivatChat", "Profile", new { userIdToAdd = user.UserId })" class="btn btn-link">Start Private Chat</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (Model != null)
+    {
+        <p>No users found with the provided search term.</p>
+    }
+</div>
+
+<style>
+    .search-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-group input {
+        width: 70%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    .search-group button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .search-group button:hover {
+        background-color: #0056b3;
+    }
+
+    .user-list {
+        margin-top: 20px;
+    }
+
+    .user-card {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info {
+        margin-bottom: 10px;
+    }
+
+    .user-actions a {
+        margin-right: 10px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .user-actions a:hover {
+        text-decoration: underline;
+    }
+</style>

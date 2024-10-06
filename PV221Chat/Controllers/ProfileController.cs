@@ -77,12 +77,18 @@ namespace PV221Chat.Controllers
 
             return RedirectToAction("Profile", "Profile");
         }
-
-        public async Task<IActionResult> Profiles()
+        [HttpGet]
+        public async Task<IActionResult> Profiles(string searchTerm)
         {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return View(new List<UserDTO>()); 
+            }
             var allUsers = await _userRepository.GetListDataAsync();
-            var userDTOs = allUsers.Select(user => UserMapper.ToDTO(user)).ToList();
-
+            var userDTOs = allUsers
+                .Where(u => u.Email.Contains(searchTerm) || u.Nickname.Contains(searchTerm))
+                .Select(user => UserMapper.ToDTO(user))
+                .ToList();
             return View(userDTOs);
         }
 
