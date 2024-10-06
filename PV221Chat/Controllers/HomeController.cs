@@ -30,6 +30,7 @@ namespace PV221Chat.Controllers
             _chatRepository = chatRepository;
             _hubContext = hubContext;
             _userRepository = userRepository;
+            _messageExtension = messageExtension;
         }
 
         public IActionResult Chat()
