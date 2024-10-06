@@ -138,7 +138,6 @@ public partial class Pv221chatContext : DbContext
 
             entity.ToTable("GlobalChatMessage");
 
-            entity.Property(e => e.MessageGcId).ValueGeneratedNever();
             entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.MessageText).HasMaxLength(255);
 
