@@ -19,19 +19,5 @@ namespace PV221Chat.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
-        // Метод отправки сообщения
-        public async Task SendMessage(string messageText)
-        {
-            var message = new
-            {
-                MessageId = Guid.NewGuid(),  // Уникальный идентификатор
-                SenderId = Context.ConnectionId,  // ID отправителя
-                MessageText = messageText,
-                SentAt = DateTime.Now  // Время отправки
-            };
-
-            // Отправляем сообщение всем пользователям в группе "GlobalChat"
-            await Clients.Group("GlobalChat").SendAsync("ReceiveMessage", message);
-        }
     }
 }

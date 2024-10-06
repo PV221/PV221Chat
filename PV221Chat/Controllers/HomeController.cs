@@ -33,7 +33,7 @@ namespace PV221Chat.Controllers
 
         public IActionResult Chat()
         {
-            var messages = new List<MessageDTO>();
+            var messages = new List<GlobalChatMessageDTO>();
             return View(messages);
         }
 

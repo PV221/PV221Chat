@@ -20,7 +20,7 @@ namespace PV221Chat.Services
             await _hubContext.Clients.Group(chatId.ToString())
                 .SendAsync("ReceiveMessage", chatId, message);
         }
-        public async Task SendNewMessageToGlobalMessageAsync(GlobalChatMessage message)
+        public async Task SendNewMessageToGlobalMessageAsync(GlobalChatMessageDTO message)
         {
             await _hubContext.Clients.Group("GlobalChat")
                 .SendAsync("ReceiveMessage", message);

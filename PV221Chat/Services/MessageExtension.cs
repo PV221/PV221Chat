@@ -5,6 +5,7 @@ using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.Core.Services.WithHub;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using PV221Chat.Services.Interfaces;
 using PV221Chat.SignalR;
 
@@ -38,7 +39,7 @@ namespace PV221Chat.Services
         }
 
 
-        public async Task<GlobalChatMessage> SendMessageToGlobalChatAsync(string messageText, int senderId)
+        public async Task<GlobalChatMessageDTO> SendMessageToGlobalChatAsync(string messageText, int senderId)
         {
             var globalChatMessage = new GlobalChatMessage
             {
@@ -49,9 +50,10 @@ namespace PV221Chat.Services
 
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
 
+            var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage);
 
-            await _messageService.SendNewMessageToGlobalMessageAsync( globalChatMessage);
-            return globalChatMessage;
+            await _messageService.SendNewMessageToGlobalMessageAsync(globalChatMessageDTO);
+            return globalChatMessageDTO;
 
         }
 
