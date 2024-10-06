@@ -12,8 +12,8 @@
                      id="message-id-@message.MessageGcId">
 
                     <div class="message-content">
-                        <a  href="@Url.Action("Profile", "Profile", new { userId = message.UserId })" class="btn btn-link">@message.SenderName:</a> @message.MessageText</div>
-                    <div class="message-time">@message.CreateAt.ToString("HH:mm")</div>
+                       <span class="message-time">@message.CreateAt.ToString("HH:mm")</span> <a  href="@Url.Action("Profile", "Profile", new { userId = message.UserId })" class="btn btn-link">@message.SenderName:</a> @message.MessageText</div>
+                   
                 </div>
             }
             </div>
@@ -100,9 +100,9 @@
         $('#chatMessages').append(`
             <div class="message-sent" id="message-id-${message.messageGcId}">
                 <div class="message-content">
-                    <a href="${profileUrl}" class="btn btn-link">${message.senderName}</a>: ${message.messageText}
+                   <span class="message-time">${formattedTime}</span> <a href="${profileUrl}" class="btn btn-link">${message.senderName}</a>: ${message.messageText}
                 </div>
-                <div class="message-time">${formattedTime}</div>
+                
             </div>
         `);
     });
