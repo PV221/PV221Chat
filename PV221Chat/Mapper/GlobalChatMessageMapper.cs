@@ -5,6 +5,15 @@ namespace PV221Chat.Mapper
 {
     public class GlobalChatMessageMapper
     {
+        public static GlobalChatMessageDTO CreateDTO(int userId, string message)
+        {
+            return new GlobalChatMessageDTO
+            {
+                UserId = userId,
+                MessageText = message,
+                CreateAt = DateTime.Now
+            };
+        }
         public static GlobalChatMessage ToModel(GlobalChatMessageDTO dto)
         {
             return new GlobalChatMessage

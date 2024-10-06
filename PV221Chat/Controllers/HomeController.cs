@@ -5,6 +5,7 @@ using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using PV221Chat.Models;
 using PV221Chat.SignalR;
 using System.Diagnostics;
@@ -50,13 +51,7 @@ namespace PV221Chat.Controllers
             {
                 return RedirectToAction("Logout", "Login");
             }
-            var messageDto = new
-            {
-                MessageId = Guid.NewGuid(),
-                SenderId = userExists.Email,  
-                MessageText = message,
-                SentAt = DateTime.Now
-            };
+            var messageDto = GlobalChatMessageMapper.CreateDTO(userExists.UserId, message);
 
             await _hubContext.Clients.Group("GlobalChat").SendAsync("ReceiveMessage", messageDto);
 
