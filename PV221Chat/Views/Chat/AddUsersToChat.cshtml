@@ -1,0 +1,105 @@
+﻿@model PV221Chat.DTO.GroupEditDTO
+
+@{
+    ViewData["Title"] = "Add Users to Chat";
+}
+
+<h2>Add Users to Chat</h2>
+
+<div class="">
+    <h4>Group Name</h4>
+    <input type="text" id="groupName" value="temo" required/>
+</div>
+
+<div class="form-group">
+    <input type="text" id="searchTerm" class="form-control" placeholder="Search users by nickname or email" onkeyup="filterUsers()" />
+</div>
+
+<div class="users-list">
+    <h4>Users</h4>
+    <div id="users-container" class="list-group">
+        @foreach (var user in Model.users)
+        {
+            <div class="list-group-item" data-nickname="@user.Nickname" data-email="@user.Email">
+                <span>@user.Nickname (@user.Email)</span>
+                <button type="button" class="btn btn-success btn-sm float-right" onclick="addUserToChat(@user.UserId, '@user.Nickname')">
+                    Add to Chat
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- List of users to be added to chat -->
+<div class="selected-users mt-4">
+    <h4>List of Users to be Added</h4>
+    <ul id="selected-users-list" class="list-group">
+        <!-- Dynamically added users will appear here -->
+    </ul>
+</div>
+
+<!-- Confirm Button -->
+<button type="button" class="btn btn-primary mt-3" onclick="confirmUsersToChat()">
+    Confirm
+</button>
+
+<script type="text/javascript">
+    // List to store selected user IDs
+    let selectedUsers = [];
+
+    // Function to add user to the selected users list
+    function addUserToChat(userId, nickname) {
+        if (!selectedUsers.includes(userId)) {
+            selectedUsers.push(userId);
+
+            // Add user to the list in the UI
+            const userList = document.getElementById('selected-users-list');
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.id = 'selected-user-' + userId;
+            listItem.innerHTML = `${nickname} <button class="btn btn-danger btn-sm float-right" onclick="removeUserFromChat(${userId})">Remove</button>`;
+            userList.appendChild(listItem);
+
+            // Disable the "Add to Chat" button for this user
+            document.getElementById('add-user-' + userId).disabled = true;
+        }
+    }
+
+    // Function to remove user from the selected users list
+    function removeUserFromChat(userId) {
+        // Remove user ID from the selected users array
+        selectedUsers = selectedUsers.filter(id => id !== userId);
+
+        // Remove user from the UI list
+        const listItem = document.getElementById('selected-user-' + userId);
+        if (listItem) {
+            listItem.remove();
+        }
+
+        // Re-enable the "Add to Chat" button for this user
+        document.getElementById('add-user-' + userId).disabled = false;
+    }
+
+    // Function to confirm selected users to chat
+    function confirmUsersToChat() {
+        console.log('Selected users:', selectedUsers);
+        // Handle the confirmation logic (AJAX call or form submission)
+    }
+
+    // Function to filter users based on search input
+    function filterUsers() {
+        const searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+        const users = document.querySelectorAll('#users-container .list-group-item');
+
+        users.forEach(function (user) {
+            const nickname = user.getAttribute('data-nickname').toLowerCase();
+            const email = user.getAttribute('data-email').toLowerCase();
+
+            if (nickname.includes(searchTerm) || email.includes(searchTerm)) {
+                user.style.display = 'block';
+            } else {
+                user.style.display = 'none';
+            }
+        });
+    }
+</script>

@@ -17,6 +17,7 @@ namespace PV221Chat.ViewComponents
         }
         public async Task<IViewComponentResult> InvokeAsync(int chatId)
         {
+            ViewBag.ChatId = chatId;
             var members = await GetMembersAsync(chatId);
             return View(members);
         }

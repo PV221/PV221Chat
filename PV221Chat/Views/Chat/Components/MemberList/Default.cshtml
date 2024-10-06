@@ -21,6 +21,11 @@
     {
         <p>No members to display.</p>
     }
+
+    <form asp-action="AddUsersToChat" asp-controller="Chat" method="post">
+        <input type="hidden" name="chatId" value="@ViewBag.ChatId" />
+        <button type="submit">Add Users To Chat</button>
+    </form>
 </div>
 
 <style>

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
+using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using PV221Chat.Models;
 using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;
@@ -80,6 +82,36 @@ namespace PV221Chat.Controllers
             var messageDTO = await _messageExtension.SendMessageAsync(chatId, message, user.UserId);
 
             return Ok(messageDTO);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateNewGroupChat()
+        {
+            var users = await _userRepository.GetListDataAsync();
+            var usersDTO = users.Select(user => UserMapper.ToDTO(user)).ToList();
+            return View(usersDTO);
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateNewGroupChat(int temp)
+        //{
+        //    var users = await _userRepository.GetListDataAsync();
+        //    var usersDTO = users.Select(user => UserMapper.ToDTO(user));
+        //    return View(usersDTO);
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> AddUsersToChat(int chatId)
+        {
+            var users = await _userRepository.GetListDataAsync();
+            var usersDTO = users.Select(user => UserMapper.ToDTO(user)).ToList();
+
+            var groupEditDTO = new GroupEditDTO
+            {
+                use
+            };
+
+            return View(usersDTO);
         }
     }
 }
