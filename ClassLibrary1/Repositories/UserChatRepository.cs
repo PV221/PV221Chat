@@ -17,4 +17,13 @@ public class UserChatRepository : EFRepository<UserChat>, IUserChatRepository
         return await _context.UserChats
            .FirstOrDefaultAsync(uc => uc.UserId == userId && uc.ChatId == chatId);
     }
+
+    public async Task<IEnumerable<UserChat>> GetAllUserChatsAsync(int chatId)
+    {
+        var userChats = await _context.UserChats
+                         .Where(uc => uc.ChatId == chatId)
+                         .ToListAsync();
+
+        return userChats;
+    }
 }
