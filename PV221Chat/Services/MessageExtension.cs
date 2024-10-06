@@ -1,9 +1,13 @@
-﻿using PV221Chat.Core.DataModels;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.SignalR;
+using PV221Chat.Core.DataModels;
 using PV221Chat.Core.Interfaces;
 using PV221Chat.Core.Repositories;
 using PV221Chat.Core.Services.WithHub;
 using PV221Chat.DTO;
+using PV221Chat.Mapper;
 using PV221Chat.Services.Interfaces;
+using PV221Chat.SignalR;
 
 namespace PV221Chat.Services
 {
@@ -14,18 +18,44 @@ namespace PV221Chat.Services
         private readonly INotificationRepository _notificationRepository;
         private readonly INotificationService _notificationService;
         private readonly IMessageService _messageService;
+        private readonly IGlobalChatMessageRepository _globalChatMessageRepository;
+        private readonly IHubContext<GlobalChatHub> _globalChatHubContext;
 
         public MessageExtension(IMessageRepository messageRepository,
                               INotificationRepository notificationRepository,
                               INotificationService notificationService,
                               IMessageService messageService,
-                              IUserRepository userRepository)
+                              IUserRepository userRepository, 
+                              IGlobalChatMessageRepository globalChatMessageRepository,
+                              IHubContext<GlobalChatHub> globalChatHubContext)
         {
             _messageRepository = messageRepository;
             _notificationRepository = notificationRepository;
             _notificationService = notificationService;
             _messageService = messageService;
             _userRepository = userRepository;
+            _globalChatMessageRepository = globalChatMessageRepository;
+            _globalChatHubContext = globalChatHubContext;
+        }
+
+
+        public async Task<GlobalChatMessageDTO> SendMessageToGlobalChatAsync(string messageText, int senderId)
+        {
+            var list = await _globalChatMessageRepository.GetListDataAsync();
+            var globalChatMessage = new GlobalChatMessage
+            {
+                UserId = senderId,
+                MessageText = messageText,
+                CreateAt = DateTime.UtcNow
+            };
+            globalChatMessage = await _globalChatMessageRepository.AddDataReturnedMessageAsync(globalChatMessage);
+
+            string nameUser= (await _userRepository.GetDataAsync(senderId)).Nickname;
+            var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage, nameUser);
+
+            await _messageService.SendNewMessageToGlobalMessageAsync(globalChatMessageDTO);
+            return globalChatMessageDTO;
+
         }
 
         public async Task<MessageDTO> SendMessageAsync(int chatId, string messageText, int senderId)

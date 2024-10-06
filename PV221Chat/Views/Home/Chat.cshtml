@@ -1,4 +1,4 @@
-﻿@model List<PV221Chat.DTO.MessageDTO>
+﻿@model List<PV221Chat.DTO.GlobalChatMessageDTO>
 
 @if (Model != null && Model.Any())
 {
@@ -6,11 +6,11 @@
     <div class="chat-messages" id="chatMessages">
     @foreach (var message in Model)
     {
-            <div class="message-@message.MessageType"
-             id="message-id-@message.MessageId">
+        <div class="message-@message.UserId"
+             id="message-id-@message.MessageGcId">
 
-            <div class="message-content">@message.MessageText</div>
-            <div class="message-time">@message.SentAt?.ToString("HH:mm")</div>
+            <div class="message-content">@message.SenderName: @message.MessageText</div>
+            <div class="message-time">@message.CreateAt.ToString("HH:mm")</div>
         </div>
     }
     </div>
@@ -41,25 +41,24 @@ else
                 url: '@Url.Action("SendMessage", "Home")',
                 data: { message: message },
                 success: function (response) {
-                    alert("Сообщение отправлено!");
+                    // alert("Сообщение отправлено!");
                     $('#messageInput').val('');
 
-                    console.log(response);
+                    
 
                     const newMessage = {
-                        MessageId: response.messageId,
-                        SenderId: response.senderId,
-                        MessageType: response.messageType,
-                        SenderName: response.senderName,
+                        MessageId: response.messageGcId,
+                        SenderId: response.userId,
                         MessageText: response.messageText,
-                        SentAt: response.sentAt
+                        CreateAt: response.createAt,
+                        SenderName: response.senderName
                     };
 
-                    const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    });
+                    // const formattedTime = new Date(newMessage.CreateAt).toLocaleTimeString([], {
+                    //     hour: '2-digit',
+                    //     minute: '2-digit',
+                    //     hour12: false
+                    // });
 
                     // Добавляем новое сообщение на страницу
                     // $('#chatMessages').append(`
@@ -84,15 +83,17 @@ else
 
     // Событие получения сообщения от других пользователей
     connectionChatHub.on("ReceiveMessage", function (message) {
-        const formattedTime = new Date(message.SentAt).toLocaleTimeString([], {
+        const formattedTime = new Date(message.createAt).toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
         });
 
+        console.log(message);
+
         $('#chatMessages').append(`
-                <div class="message-sent" id="message-id-${message.messageId}">
-                    <div class="message-content">${message.messageText}</div>
+                    <div class="message-sent" id="message-id-${message.messageGcId}">
+                    <div class="message-content">${message.senderName}: ${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
             `);
