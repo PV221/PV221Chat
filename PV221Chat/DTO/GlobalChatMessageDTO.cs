@@ -3,6 +3,7 @@
     public class GlobalChatMessageDTO
     {
         public int UserId { get; set; }
+        public string SenderName { get; set; } = null!;
 
         public int MessageGcId { get; set; }
 

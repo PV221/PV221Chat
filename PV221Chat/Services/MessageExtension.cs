@@ -44,15 +44,14 @@ namespace PV221Chat.Services
             var list = await _globalChatMessageRepository.GetListDataAsync();
             var globalChatMessage = new GlobalChatMessage
             {
-                MessageGcId = list.Count()+1,
                 UserId = senderId,
                 MessageText = messageText,
                 CreateAt = DateTime.UtcNow
             };
             Console.WriteLine(globalChatMessage.MessageText + " " + globalChatMessage.MessageGcId);
             await _globalChatMessageRepository.AddDataAsync(globalChatMessage);
-
-            var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage);
+            string nameUser= (await _userRepository.GetDataAsync(senderId)).Nickname;
+            var globalChatMessageDTO = GlobalChatMessageMapper.ToDTO(globalChatMessage, nameUser);
 
             Console.WriteLine(globalChatMessageDTO.MessageText + " " + globalChatMessageDTO.MessageGcId);
             await _messageService.SendNewMessageToGlobalMessageAsync(globalChatMessageDTO);

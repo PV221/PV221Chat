@@ -41,17 +41,16 @@ else
                 url: '@Url.Action("SendMessage", "Home")',
                 data: { message: message },
                 success: function (response) {
-                    alert("Сообщение отправлено!");
+                    // alert("Сообщение отправлено!");
                     $('#messageInput').val('');
 
 
                     const newMessage = {
-                        MessageId: response.messageId,
-                        SenderId: response.senderId,
-                        MessageType: response.messageType,
-                        SenderName: response.senderName,
-                        MessageText: response.messageText,
-                        SentAt: response.sentAt
+                        MessageId: response.MessageGcId,
+                        SenderId: response.UserId,
+                        MessageText: response.MessageText,
+                        CreateAt: response.CreateAt,
+                        SenderName: response.SenderName
                     };
 
                     const formattedTime = new Date(newMessage.SentAt).toLocaleTimeString([], {
@@ -93,6 +92,7 @@ else
 
         $('#chatMessages').append(`
                     <div class="message-sent" id="message-id-${message.MessageGcId}">
+                    <div class="message-content">${message.SenderName}</div>
                     <div class="message-content">${message.messageText}</div>
                     <div class="message-time">${formattedTime}</div>
                 </div>
