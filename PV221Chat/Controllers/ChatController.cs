@@ -10,6 +10,7 @@ using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Security.Claims;
 
@@ -109,35 +110,79 @@ namespace PV221Chat.Controllers
 
             var chat = await _chatRepository.GetDataAsync(chatId);
 
+            var userChats = await _userChatRepository.GetAllUserChatsAsync(chatId);
+
             var groupEditDTO = new GroupEditDTO
             {
                 chatId = chatId,
                 GroupName = chat.ChatName,
-                users = usersDTO
+                users = usersDTO,
+                UsersInGroup = userChats
+                        .Select(uc => uc.UserId) 
+                        .Where(userId => userId.HasValue) 
+                        .Select(userId => userId.Value) 
+                        .ToList()
             };
 
             return View(groupEditDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateGroup(int chatId, string groupName, List<int> userIds)
+        public async Task<IActionResult> UpdateGroup(int chatId, string groupName, string userIds1)
         {
+            var strings = userIds1.Split(",");
+            var userIds = Array.ConvertAll(strings, int.Parse);
+
+
             var chat = await _chatRepository.GetDataAsync(chatId);
             chat.ChatName = groupName;
 
+            
+            var userChats = await _userChatRepository.GetAllUserChatsAsync(chatId);
+            var existingUserIds = userChats.Select(uc => uc.UserId).ToHashSet();
+
+            if (userIds.Count() > 2)
+            {
+                chat.ChatType = "Group";
+            }
+            else
+            {
+                if (userChats.Count() > 2)
+                {
+                    chat.ChatType = "Group";
+                }
+                else
+                {
+                    chat.ChatType = "Private";
+                }
+            }
+
             await _chatRepository.UpdateDataAsync(chat.ChatId, chat);
 
-            foreach(int userId in userIds)
-            {
-                var userChat = new UserChat
-                {
-                    UserId = userId,
-                    ChatId  = chatId,
-                    IsAdmin = false,
-                    MembershipStatus = "Accepted"
-                };
 
-                await _userChatRepository.AddDataAsync(userChat);
+
+            foreach (int userId in userIds)
+            {
+                if (!existingUserIds.Contains(userId))
+                {
+                    var userChat = new UserChat
+                    {
+                        UserId = userId,
+                        ChatId = chatId,
+                        IsAdmin = false,
+                        MembershipStatus = "Accepted"
+                    };
+
+                    await _userChatRepository.AddDataAsync(userChat);
+                }
+            }
+
+            foreach (var userChat in userChats)
+            {
+                if (!userIds.Contains((int)userChat.UserId))
+                {
+                    await _userChatRepository.DeleteDataAsync(userChat.UserChatId);
+                }
             }
 
             return RedirectToAction("Index", "Chat");
