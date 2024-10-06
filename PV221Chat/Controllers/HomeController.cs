@@ -40,13 +40,16 @@ namespace PV221Chat.Controllers
         }
 
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SendMessage(string message)
         {
 
             var userEmailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             User userExists = await _userRepository.FindByEmailAsync(userEmailClaim.Value);
+            if (userExists == null) 
+            {
+                return RedirectToAction("Logout", "Login");
+            }
             var messageDto = new
             {
                 MessageId = Guid.NewGuid(),
