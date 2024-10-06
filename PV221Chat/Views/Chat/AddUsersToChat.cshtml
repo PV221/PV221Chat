@@ -1,0 +1,124 @@
+﻿@model PV221Chat.DTO.GroupEditDTO
+
+@{
+    ViewData["Title"] = "Add Users to Chat";
+}
+
+<h2>Add Users to Chat</h2>
+
+<div class="form-group-name">
+    <label for="groupNameInput">Group Name</label>
+    <input type="text" id="groupNameInput" class="form-control" value="@Model.GroupName" required />
+</div>
+
+<div class="form-group">
+    <input type="text" id="searchTerm" class="form-control" placeholder="Search users by nickname or email" onkeyup="filterUsers()" />
+</div>
+
+<div class="users-list">
+    <h4>Users</h4>
+    <div id="users-container" class="list-group">
+        @foreach (var user in Model.users)
+        {
+            <div class="list-group-item" data-nickname="@user.Nickname" data-email="@user.Email">
+                <span>@user.Nickname (@user.Email)</span>
+                <button type="button" class="btn btn-success btn-sm float-right" onclick="addUserToChat(@user.UserId, '@user.Nickname')">
+                    Add to Chat
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="selected-users mt-4">
+    <h4>List of Users to be Added</h4>
+    <ul id="selected-users-list" class="list-group">
+        @foreach (var userId in Model.UsersInGroup)
+        {
+            var user = Model.users.First(u => u.UserId == userId);
+            <li class="list-group-item d-flex justify-content-between align-items-center" id="selected-user-@user.UserId">
+                @user.Nickname (@user.Email)
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeUserFromChat(@user.UserId)">
+                    Remove
+                </button>
+            </li>
+        }
+    </ul>
+</div>
+
+<form asp-action="UpdateGroup" asp-controller="Chat" method="post">
+    <input type="hidden" name="chatId" value="@Model.chatId" />
+    <input type="hidden" id="groupName" name="groupName"/>
+    <input type="hidden" id="userIds1" name="userIds1" />
+
+    <button type="button" class="btn btn-primary mt-3" onclick="submitForm()">
+        Confirm
+    </button>
+</form>
+
+<script type="text/javascript">
+    // List to store selected user IDs
+    let selectedUsers = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        @foreach (var userId in Model.UsersInGroup)
+        {
+            <text>selectedUsers.push(@userId);</text>
+        }
+    });
+
+    function submitForm() {
+        var groupNameInputValue = document.getElementById("groupNameInput").value;
+
+        document.getElementById("groupName").value = groupNameInputValue;
+        document.getElementById("userIds1").value = selectedUsers.join(',');
+
+        console.log(document.getElementById("userIds1").value);// in console: 1,3,2
+
+        document.forms[0].submit();
+    }
+
+    function addUserToChat(userId, nickname) {
+        if (!selectedUsers.includes(userId)) {
+            selectedUsers.push(userId);
+
+            const userList = document.getElementById('selected-users-list');
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item';
+            listItem.id = 'selected-user-' + userId;
+            listItem.innerHTML = `${nickname} <button class="btn btn-danger btn-sm float-right" onclick="removeUserFromChat(${userId})">Remove</button>`;
+            userList.appendChild(listItem);
+
+            document.getElementById('add-user-' + userId).disabled = true;
+        }
+    }
+
+    function removeUserFromChat(userId) {
+
+        selectedUsers = selectedUsers.filter(id => id !== userId);
+
+        const listItem = document.getElementById('selected-user-' + userId);
+        if (listItem) {
+            listItem.remove();
+        }
+
+        document.getElementById('add-user-' + userId).disabled = false;
+    }
+
+    function filterUsers() {
+        const searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+        const users = document.querySelectorAll('#users-container .list-group-item');
+
+        users.forEach(function (user) {
+            const nickname = user.getAttribute('data-nickname').toLowerCase();
+            const email = user.getAttribute('data-email').toLowerCase();
+
+            if (nickname.includes(searchTerm) || email.includes(searchTerm)) {
+                user.style.display = 'block';
+            } else {
+                user.style.display = 'none';
+            }
+        });
+    }
+</script>
