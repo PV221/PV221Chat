@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using PV221Chat.Core.DataModels;
-using PV221Chat.Core.Interfaces;
-using PV221Chat.Core.Repositories;
-using PV221Chat.Core.Services.WithHub;
+using PV221Chat.DAL.Interfaces;
 using PV221Chat.DTO;
 using PV221Chat.Mapper;
 using PV221Chat.Services.Interfaces;

@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary1\PV221Chat.Core.csproj" />
+    <ProjectReference Include="..\PV221Chat.DAL\PV221Chat.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

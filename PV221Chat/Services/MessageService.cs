@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using PV221Chat.Core.DataModels;
 using PV221Chat.DTO;
 using PV221Chat.Services.Interfaces;
 using PV221Chat.SignalR;

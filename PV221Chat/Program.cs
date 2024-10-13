@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PV221Chat.Core.DataContext;
-using PV221Chat.Core.Services;
 using PV221Chat.SignalR;
 using PV221Chat.Services;
 
@@ -9,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add service DJ Interfaces to Repositories
 builder.Services.AddRepositoryService();
-builder.Services.AddService();
+builder.Services.AddAnotherService();
 
 builder.Services.AddSignalR();
 

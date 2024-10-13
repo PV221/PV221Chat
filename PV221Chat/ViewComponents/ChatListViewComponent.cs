@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
-using PV221Chat.Core.Interfaces;
-using PV221Chat.Core.Repositories;
+using PV221Chat.DAL.Interfaces;
 using PV221Chat.DTO;
 using System.Data;
 using System.Security.Claims;

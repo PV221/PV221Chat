@@ -2,16 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PV221Chat.Core.DataModels;
-using PV221Chat.Core.Interfaces;
-using PV221Chat.Core.Repositories;
+using PV221Chat.DAL.Interfaces;
 using PV221Chat.DTO;
 using PV221Chat.Mapper;
 using PV221Chat.Models;
-using PV221Chat.Services;
 using PV221Chat.Services.Interfaces;
 using PV221Chat.SignalR;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -36,12 +32,6 @@ namespace PV221Chat.Controllers
             _messageExtension = messageExtension;
             _globalChatMessageRepository = globalChatMessageRepository;
         }
-        //[HttpGet]
-        //public IActionResult Chat()
-        //{
-        //    var messages = new List<GlobalChatMessageDTO>();
-        //    return View(messages);
-        //}
 
         public IActionResult Privacy()
         {
@@ -88,19 +78,6 @@ namespace PV221Chat.Controllers
 
             return Ok(messageDTO);
         }
-
-        //[HttpGet("Chat/{id:int}")]
-        //public async Task<IActionResult> Chat(int id)
-        //{
-        //    var chat = await _chatRepository.GetDataAsync(id);
-
-        //    if (chat == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(chat);
-        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

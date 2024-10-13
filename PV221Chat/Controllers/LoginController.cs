@@ -2,15 +2,11 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using PV221Chat.Core.DataModels;
-using PV221Chat.Core.Interfaces;
 using PV221Chat.DTO;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using PV221Chat.Core.Repositories;
-using Microsoft.AspNetCore.Identity;
 using PV221Chat.Mapper;
+using PV221Chat.DAL.Interfaces;
 
 namespace PV221Chat.Controllers
 {
