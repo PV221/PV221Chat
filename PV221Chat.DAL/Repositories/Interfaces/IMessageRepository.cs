@@ -1,0 +1,10 @@
+﻿using PV221Chat.Core.DataModels;
+
+namespace PV221Chat.DAL.Interfaces;
+
+public interface IMessageRepository : IDataRepository<Message>
+{
+    Task<List<Message>> GetByChatIdAndSortedAsync(int chatId, int limit);
+    Task<Message> AddDataReturnedMessageAsync(Message message);
+    Task<Message?> FindLastMessageByChatIdAsync(int chatId);
+}
